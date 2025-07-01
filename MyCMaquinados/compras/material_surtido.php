@@ -39,7 +39,11 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 </head>
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container-fluid">
@@ -49,13 +53,21 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link" href="./sesion_usuario.php">Pagina Principal</a>
                 </li>
-               
+                <li class="nav-item">
+                    <a class="nav-link" href="./pedidos.php">Pedidos de Material</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./carrito.php">carrito</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./ver_pedidos.php">Solicitud de Pedidos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./pedidos_aceptados.php">Pedidos Aceptados</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="material_surtido.php">Material Surtido</a>
                 </li>
-                   <li class="nav-item">
-                        <a class="nav-link" href="reporte_mensual.php">Reporte mensual</a>
-                    </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">Cerrar Sesión</a>
                 </li>
@@ -76,8 +88,33 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </div>
+
+            <form action="" method="post" id="filtro_form" class="row g-3">
+                <div class="col-md-3">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Desde</span>
+                        <input type="date" class="form-control" name="start_date" id="start" max="<?= date('Y-m-d') ?>">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Hasta</span>
+                        <input type="date" class="form-control" name="end_date" id="end" max="<?= date('Y-m-d') ?>">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" id="filtro" class="btn btn-success">
+                        <i class="fa-solid fa-magnifying-glass"></i> Filtrar
+                    </button>
+                    <button type="button" id="limpiar" class="btn btn-secondary">
+                        <i class="fa-solid fa-eraser"></i> Limpiar
+                    </button>
+                </div>
+            </form>
+
+            <div id="error-message" class="alert alert-danger my-3" style="display: none;"></div>
             <div class="card-body">
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered table-hover" id="DataTable">
                     <thead class="thead-light">
                         <tr>
                             <th>#</th>
@@ -116,7 +153,7 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
-
+<script src="script.js"></script>
 </body>
 
 </html>
