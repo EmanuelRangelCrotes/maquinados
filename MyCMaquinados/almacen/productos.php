@@ -210,149 +210,13 @@ document.getElementById('busquedaProductos').addEventListener('keyup', function 
                                 </div>
                                 <div class="mb-3">
                                     <label for="clase">Clase</label>
-                                    <select type="text" class="form-control" name="clase" id="clase">
-                                        <option value="">Seleccione una clase</option>
-                                        <option value="Acero E">Acero E</option>
-                                        <option value="Administrativo">Administrativo</option>
-                                        <option value="Consumible">Consumible</option>
-                                        <option value="Decoracion">Decoración</option>
-                                        <option value="EHS">EHS</option>
-                                        <option value="Electrico">Electrico</option>
-                                        <option value="EPP">EPP</option>
-                                        <option value="Equipo">Equipo</option>
-                                        <option value="Herrajes">Herrajes</option>
-                                        <option value="Herramienta">Herramienta</option>
-                                        <option value="IT">IT</option>
-                                        <option value="Limpieza">Limpieza</option>
-                                        <option value="Medico">Medico</option>
-                                        <option value="Papeleria">Papeleria</option>
-                                        <option value="Perfil">Perfil</option>
-                                        <option value="Quimico">Quimico</option>
-                                    </select>
+                                    <input type="text" class="form-control" name="clase" id="clase" autocomplete="off">
+                                    <div id="clase-suggestions" class="suggestions-container"></div>
                                 </div>
-                                <div class="mb-3">
+                               <div class="mb-3">
                                     <label for="descripcion">Descripción</label>
-                                    <select type="text" class="form-control" name="descripcion" id="descripcion">
-                                        <option value="">Seleccione una descripción</option>
-                                        <option value="Accesorios">Accesorios</option>
-                                        <option value="Alcoholimetro">Alcoholimetro</option>
-                                        <option value="Angulo">Angulo</option>
-                                        <option value="Arandela">Arandela</option>
-                                        <option value="Armella">Armella</option>
-                                        <option value="Atomizador">Atomizador</option>
-                                        <option value="Balero">Balero</option>
-                                        <option value="Bateria">Bateria</option>
-                                        <option value="Bisagra">Bisagra</option>
-                                        <option value="Bolsa">Bolsa</option>
-                                        <option value="Bomba">Bomba</option>
-                                        <option value="Boquilla">Boquilla</option>
-                                        <option value="Broca">Broca</option>
-                                        <option value="Brocha">Brocha</option>
-                                        <option value="Bruje">Bruje</option>
-                                        <option value="Burill">Burill</option>
-                                        <option value="Cable">Cable</option>
-                                        <option value="Cadena">Cadena</option>
-                                        <option value="Caja">Caja</option>
-                                        <option value="Camara">Camara</option>
-                                        <option value="Camisola">Camisola</option>
-                                        <option value="Candado">Candado</option>
-                                        <option value="Carda">Carda</option>
-                                        <option value="Casco">Casco</option>
-                                        <option value="Casquillo">Casquillo</option>
-                                        <option value="Cinchos">Cinchos</option>
-                                        <option value="Cinta">Cinta</option>
-                                        <option value="Clavija">Clavija</option>
-                                        <option value="Codo Soldable">Codo Soldable</option>
-                                        <option value="Conector">Conector</option>
-                                        <option value="Cortadora">Cortadora</option>
-                                        <option value="Cuadrado">Cuadrado</option>
-                                        <option value="Cubeta">Cubeta</option>
-                                        <option value="Cuter">Cuter</option>
-                                        <option value="Dado">Dado</option>
-                                        <option value="DC3">DC3</option>
-                                        <option value="Desengrasante">Desengrasante</option>
-                                        <option value="Destorcedor">Destorcedor</option>
-                                        <option value="Disco">Disco</option>
-                                        <option value="Dispensador">Dispensador</option>
-                                        <option value="Emplaye">Emplaye</option>
-                                        <option value="Envase">Envase</option>
-                                        <option value="Envio">Envio</option>
-                                        <option value="Espejo">Espejo</option>
-                                        <option value="Estufa">Estufa</option>
-                                        <option value="Extensión">Extensión</option>
-                                        <option value="Figura">Figura</option>
-                                        <option value="Flexometro">Flexometro</option>
-                                        <option value="Foco">Foco</option>
-                                        <option value="Folder">Folder</option>
-                                        <option value="Gancho">Gancho</option>
-                                        <option value="Garantia">Garantia</option>
-                                        <option value="Gas">Gas</option>
-                                        <option value="Grapadora">Grapadora</option>
-                                        <option value="Guardacabo">Guardacabo</option>
-                                        <option value="Hoja">Hoja</option>
-                                        <option value="Iman">Iman</option>
-                                        <option value="Lamina">Lamina</option>
-                                        <option value="Lente de Seguridad">Lente de Seguridad</option>
-                                        <option value="Lija">Lija</option>
-                                        <option value="Llave">Llave</option>
-                                        <option value="Lona">Lona</option>
-                                        <option value="Maletin">Maletin</option>
-                                        <option value="Marcador">Marcador</option>
-                                        <option value="Matraca">Matraca</option>
-                                        <option value="Matraz">Matraz</option>
-                                        <option value="Medicamento">Medicamento</option>
-                                        <option value="Mezcla">Mezcla</option>
-                                        <option value="Microalambre">Microalambre</option>
-                                        <option value="Mouse">Mouse</option>
-                                        <option value="Niple">Niple</option>
-                                        <option value="Perno">Perno</option>
-                                        <option value="Pija">Pija</option>
-                                        <option value="Pintura">Pintura</option>
-                                        <option value="Pinzas">Pinzas</option>
-                                        <option value="Pistola">Pistola</option>
-                                        <option value="Placa">Placa</option>
-                                        <option value="Pluma">Pluma</option>
-                                        <option value="Portaelectrodo">Portaelectrodo</option>
-                                        <option value="Protector">Protector</option>
-                                        <option value="PTR">PTR</option>
-                                        <option value="Pulidor">Pulidor</option>
-                                        <option value="Punta">Punta</option>
-                                        <option value="Receptaculo">Receptaculo</option>
-                                        <option value="Redondo">Redondo</option>
-                                        <option value="Regaton">Regaton</option>
-                                        <option value="Regulador">Regulador</option>
-                                        <option value="Resistol">Resistol</option>
-                                        <option value="Resorte">Resorte</option>
-                                        <option value="Rondamiento">Rondamiento</option>
-                                        <option value="Rondana">Rondana</option>
-                                        <option value="Sacagrapa">Sacagrapa</option>
-                                        <option value="Seguidores">Seguidores</option>
-                                        <option value="Sensor">Sensor</option>
-                                        <option value="Servicio">Servicio</option>
-                                        <option value="Sierracinta">Sierracinta</option>
-                                        <option value="Silicon">Silicon</option>
-                                        <option value="Soldadura">Soldadura</option>
-                                        <option value="Solera">Solera</option>
-                                        <option value="Solvente">Solvente</option>
-                                        <option value="Tabla">Tabla</option>
-                                        <option value="Tapa">Tapa</option>
-                                        <option value="Tapon seg">Tapon seg</option>
-                                        <option value="Tarquete">Tarquete</option>
-                                        <option value="Tarjeta">Tarjeta</option>
-                                        <option value="Television">Television</option>
-                                        <option value="Tijera">Tijera</option>
-                                        <option value="Toalla">Toalla</option>
-                                        <option value="Tobera">Tobera</option>
-                                        <option value="Tornillo">Tornillo</option>
-                                        <option value="Torre">Torre</option>
-                                        <option value="Tramite">Tramite</option>
-                                        <option value="Trapeador">Trapeador</option>
-                                        <option value="Trapo">Trapo</option>
-                                        <option value="Tubo">Tubo</option>
-                                        <option value="Tuerca">Tuerca</option>
-                                        <option value="Valvula">Valvula</option>
-                                        <option value="Varilla">Varilla</option>
-                                    </select>
+                                    <input type="text" class="form-control" name="descripcion" id="descripcion" autocomplete="off">
+                                    <div id="descripcion-suggestions" class="suggestions-container"></div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="unidad_medida">Unidad de Medida</label>
@@ -385,7 +249,178 @@ document.getElementById('busquedaProductos').addEventListener('keyup', function 
 </div>
 
 
+<script>
+    $(document).ready(function() {
+        const claseInput = $('#clase');
+        const suggestionsContainer = $('#clase-suggestions');
+        let timeoutId;
 
+        // Función mejorada para cargar sugerencias
+        function loadSuggestions(searchTerm) {
+            console.log("Buscando: ", searchTerm); // Debug
+
+            $.ajax({
+                url: 'buscar_clase.php',
+                dataType: 'json',
+                data: {
+                    q: searchTerm
+                },
+                success: function(data) {
+                    console.log("Respuesta recibida: ", data); // Debug
+
+                    suggestionsContainer.empty();
+
+                    if (data && data.length > 0) {
+                        data.forEach(item => {
+                            if (item.text) { // Asegurarse que existe text
+                                suggestionsContainer.append(
+                                    `<div class="suggestion-item">${item.text}</div>`
+                                );
+                            }
+                        });
+                        suggestionsContainer.show();
+                    } else {
+                        suggestionsContainer.hide();
+                        // Mostrar mensaje si no hay resultados
+                        if (searchTerm.length >= 2) {
+                            suggestionsContainer.html('<div class="no-results">No se encontraron resultados</div>').show();
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en AJAX: ", status, error); // Debug
+                    suggestionsContainer.hide();
+                }
+            });
+        }
+
+        // Evento al escribir - versión mejorada
+        claseInput.on('input', function() {
+            clearTimeout(timeoutId);
+            const searchTerm = $(this).val().trim();
+
+            if (searchTerm.length >= 2) {
+                timeoutId = setTimeout(() => {
+                    loadSuggestions(searchTerm);
+                }, 300);
+            } else {
+                suggestionsContainer.hide();
+            }
+        });
+
+        // Selección de sugerencia
+        suggestionsContainer.on('click', '.suggestion-item', function() {
+            claseInput.val($(this).text());
+            suggestionsContainer.hide();
+        });
+
+        // Ocultar al hacer clic fuera
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#clase, #clase-suggestions').length) {
+                suggestionsContainer.hide();
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        const descripcionInput = $('#descripcion');
+        const suggestionsContainer = $('#descripcion-suggestions');
+        let searchTimeout;
+
+        // Función para cargar sugerencias
+        function loadSuggestions(searchTerm) {
+            clearTimeout(searchTimeout);
+
+            if (searchTerm.length < 2) {
+                suggestionsContainer.hide();
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                $.ajax({
+                    url: 'buscar_descripcion.php',
+                    data: {
+                        q: searchTerm
+                    },
+                    dataType: 'json',
+                    beforeSend: function() {
+                        suggestionsContainer.html('<div class="loading">Buscando...</div>').show();
+                    },
+                    success: function(data) {
+                        suggestionsContainer.empty();
+
+                        if (data && data.length > 0) {
+                            data.forEach(item => {
+                                suggestionsContainer.append(
+                                    `<div class="suggestion-item">${item.text}</div>`
+                                );
+                            });
+                        } else {
+                            suggestionsContainer.append(
+                                '<div class="no-results">No se encontraron coincidencias</div>'
+                            );
+                        }
+                        suggestionsContainer.show();
+                    },
+                    error: function() {
+                        suggestionsContainer.hide();
+                    }
+                });
+            }, 300);
+        }
+
+        // Evento al escribir
+        descripcionInput.on('input', function() {
+            loadSuggestions($(this).val().trim());
+        });
+
+        // Seleccionar sugerencia
+        suggestionsContainer.on('click', '.suggestion-item', function() {
+            descripcionInput.val($(this).text());
+            suggestionsContainer.hide();
+        });
+
+        // Ocultar al hacer clic fuera
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#descripcion, #descripcion-suggestions').length) {
+                suggestionsContainer.hide();
+            }
+        });
+    });
+</script>
+
+<style>
+    .suggestions-container {
+        position: absolute;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        display: none;
+    }
+
+    .suggestion-item {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .suggestion-item:hover {
+        background-color: #f5f5f5;
+    }
+
+    .no-results {
+        padding: 8px 12px;
+        color: #777;
+        font-style: italic;
+    }
+
+</style>
 
 
 
