@@ -5,7 +5,7 @@ require_once './db_conexion.php';
 
 // Verificación de sesión mejorada
 if (!isset($_SESSION['logged_in'], $_SESSION['id_usuario'], $_SESSION['rol']) || $_SESSION['rol'] !== 'user') {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 
@@ -130,6 +130,33 @@ if (empty($productos)) {
         </div>
     </div>
 </div>
+
+<script>
+function cargarSolicitudes() {
+    fetch('get_pedidos_user.php')
+        .then(response => {
+            if (response.status === 401) {
+                // Redirigir si sesión expira
+                window.location.href = '../login.php';
+            }
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('contenedor-solicitudes').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error al cargar solicitudes:', error);
+            document.getElementById('contenedor-solicitudes').innerHTML = '<p class="text-danger">Error al cargar las solicitudes.</p>';
+        });
+}
+
+// Cargar inmediatamente al abrir la página
+cargarSolicitudes();
+
+// Refrescar cada 30 segundos automáticamente
+setInterval(cargarSolicitudes, 30000);
+</script>
+
 
 <script>
 // Autocompletar datos del material seleccionado
