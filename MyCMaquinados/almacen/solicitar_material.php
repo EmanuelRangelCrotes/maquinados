@@ -58,7 +58,7 @@ $cantidad = isset($_POST['cantidad']) ? htmlspecialchars($_POST['cantidad']) : '
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['name'])) {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 
@@ -137,6 +137,31 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
 
 </div>
 
+<script>
+function cargarSolicitudes() {
+    fetch('get_pedidos_almacen.php')
+        .then(response => {
+            if (response.status === 401) {
+                // Redirigir si sesión expira
+                window.location.href = '../login.php';
+            }
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('contenedor-solicitudes').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error al cargar solicitudes:', error);
+            document.getElementById('contenedor-solicitudes').innerHTML = '<p class="text-danger">Error al cargar las solicitudes.</p>';
+        });
+}
+
+// Cargar inmediatamente al abrir la página
+cargarSolicitudes();
+
+// Refrescar cada 30 segundos automáticamente
+setInterval(cargarSolicitudes, 30000);
+</script>
 
 <div id="purchaseModal" class="modal fade">
     <div class="modal-dialog modal-dialog-centered">
