@@ -114,6 +114,32 @@ $reporte = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         </table>
     <?php endif; ?>
 </div>
+<script>
+function cargarSolicitudes() {
+    fetch('get_pedidos_compras.php')
+        .then(response => {
+            if (response.status === 401) {
+                // Redirigir si sesión expira
+                window.location.href = '../login.php';
+            }
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('contenedor-solicitudes').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error al cargar solicitudes:', error);
+            document.getElementById('contenedor-solicitudes').innerHTML = '<p class="text-danger">Error al cargar las solicitudes.</p>';
+        });
+}
+
+// Cargar inmediatamente al abrir la página
+cargarSolicitudes();
+
+// Refrescar cada 30 segundos automáticamente
+setInterval(cargarSolicitudes, 30000);
+</script>
+
 </body>
 
 </html>
