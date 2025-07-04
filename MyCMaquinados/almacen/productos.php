@@ -13,7 +13,7 @@ if (
 ) {
 
     error_log("Intento de acceso no autorizado desde " . $_SERVER['REMOTE_ADDR']);
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 // Validar si el formulario fue enviado
@@ -91,7 +91,7 @@ $existencia = isset($_POST['existencia']) ? htmlspecialchars($_POST['existencia'
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['name'])) {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 
@@ -247,6 +247,31 @@ document.getElementById('busquedaProductos').addEventListener('keyup', function 
         </div>
     </div>
 </div>
+<script>
+function cargarSolicitudes() {
+    fetch('get_pedidos_almacen.php')
+        .then(response => {
+            if (response.status === 401) {
+                // Redirigir si sesión expira
+                window.location.href = '../login.php';
+            }
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('contenedor-solicitudes').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error al cargar solicitudes:', error);
+            document.getElementById('contenedor-solicitudes').innerHTML = '<p class="text-danger">Error al cargar las solicitudes.</p>';
+        });
+}
+
+// Cargar inmediatamente al abrir la página
+cargarSolicitudes();
+
+// Refrescar cada 30 segundos automáticamente
+setInterval(cargarSolicitudes, 30000);
+</script>
 
 
 <script>
