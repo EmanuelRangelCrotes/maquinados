@@ -45,11 +45,11 @@ if (empty($productos)) {
                 <div class="row mb-3">
                     <div class="col-md-4 ms-auto">
                         <input type="text" id="busquedaProductos" class="form-control" align="center"
-                            placeholder="Buscar por nombre o clase...">
+                            placeholder="Buscar por nombre o clase..."">
                     </div>
-                    <div class="row">
+                    <div class=" row">
                         <div class="col-sm-12 table-responsive">
-                            <table id="purchaseList" class="table table-bordered table-striped">
+                            <table id="purchaseList" class="table table-bordered table-striped" style="margin-top: 20px;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -78,65 +78,55 @@ if (empty($productos)) {
         </div>
     </div>
 
-<!-- Modal para solicitar material -->
-<div id="purchaseModal" class="modal fade">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Solicitar Material</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="col-md-12">
-                    <form method="post" action="procesar_solicitud.php" id="solicitudForm">
-                        <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
-                        <div class="mb-3">
-                            <label for="sku">Material (SKU):</label>
-                            <select name="id_productos" id="sku" class="form-control" required>
-                                <option value="">Seleccione un material</option>
-                                <?php foreach ($productos as $producto): ?>
-                                    <option
-                                        value="<?= htmlspecialchars($producto['id_productos']) ?>"
-                                        data-nombre="<?= htmlspecialchars($producto['nombre']) ?>"
-                                        data-clase="<?= htmlspecialchars($producto['clase']) ?>"
-                                        data-descripcion="<?= htmlspecialchars($producto['descripcion']) ?>"
-                                        data-existencia="<?= htmlspecialchars($producto['existencia']) ?>">
-                                        <?= htmlspecialchars($producto['sku']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label>Nombre:</label>
-                            <input type="text" class="form-control" id="material_nombre" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label>Clase:</label>
-                            <input type="text" class="form-control" id="material_clase" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label>Descripción:</label>
-                            <input type="text" class="form-control" id="material_descripcion" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label>Existencia:</label>
-                            <input type="text" class="form-control" id="material_existencia" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="cantidad">Cantidad a solicitar:</label>
-                            <input type="number" class="form-control" name="cantidad" id="cantidad_solicitud" min="1" required>
-                            <small class="text-muted">Puedes solicitar más que la existencia actual si es necesario.</small>
-                        </div>
-                    </form>
+    <!-- Modal para solicitar material -->
+    <div id="purchaseModal" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Solicitar Material</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" form="solicitudForm" class="btn btn-primary">Solicitar</button>
-                <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <form method="post" action="procesar_solicitud.php" id="solicitudForm">
+                            <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
+                            <input type="hidden" name="id_productos" id="id_productos">
+                            <div class="mb-3">
+                                <label for="sku">Material (SKU):</label>
+                                <input type="text" class="form-control" id="sku" name="sku" autocomplete="off" required>
+                                <div id="sku_suggestions" class="list-group position-absolute w-100"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Nombre:</label>
+                                <input type="text" class="form-control" id="material_nombre" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label>Clase:</label>
+                                <input type="text" class="form-control" id="material_clase" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label>Descripción:</label>
+                                <input type="text" class="form-control" id="material_descripcion" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label>Existencia:</label>
+                                <input type="text" class="form-control" id="material_existencia" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cantidad">Cantidad a solicitar:</label>
+                                <input type="number" class="form-control" name="cantidad" id="cantidad_solicitud" min="1" required>
+                                <small class="text-muted">Puedes solicitar más que la existencia actual si es necesario.</small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="solicitudForm" class="btn btn-primary">Solicitar</button>
+                    <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script>
         document.getElementById('busquedaProductos').addEventListener('keyup', function() {
@@ -183,17 +173,12 @@ if (empty($productos)) {
 
                             btn.addEventListener('click', () => {
                                 skuInput.value = item.sku;
-                                document.getElementById('id_productos').value = item.id;
-                                document.getElementById('material_nombre').value = item
-                                    .nombre;
-                                document.getElementById('material_clase').value = item
-                                    .clase;
-                                document.getElementById('material_descripcion').value =
-                                    item.descripcion;
-                                document.getElementById('material_existencia').value =
-                                    item.existencia;
-                                suggestionsBox.innerHTML =
-                                    ''; // Limpiar sugerencias tras seleccionar
+                                document.getElementById('id_productos').value = item.id_productos;
+                                document.getElementById('material_nombre').value = item.nombre;
+                                document.getElementById('material_clase').value = item.clase;
+                                document.getElementById('material_descripcion').value = item.descripcion;
+                                document.getElementById('material_existencia').value = item.existencia;
+                                suggestionsBox.innerHTML = '';
                             });
 
                             suggestionsBox.appendChild(btn);
@@ -202,6 +187,13 @@ if (empty($productos)) {
                     .catch(error => {
                         console.error('Error al buscar SKUs:', error);
                     });
+            });
+
+            // Ocultar sugerencias si se hace clic fuera
+            document.addEventListener('click', function(e) {
+                if (!skuInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                    suggestionsBox.innerHTML = '';
+                }
             });
         });
     </script>
