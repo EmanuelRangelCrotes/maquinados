@@ -85,7 +85,7 @@ $proveedores = $query_search->fetchAll(PDO::FETCH_ASSOC);
                             <i class="far fa-plus-square"></i> Agregar Proveedor
                         </button>
                     </div>
-
+                    
                 </div>
             </div>
             <div class="card-body">
@@ -122,14 +122,14 @@ $proveedores = $query_search->fetchAll(PDO::FETCH_ASSOC);
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><i class="fa fa-plus"></i> Agregar Compra</h4>
+                <h4 class="modal-title"><i class="fa fa-plus"></i> Agregar Proveedor</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="col-md-8" style="margin: 0 auto; margin-top: 50px;">
                     <div class="card">
                         <div class="card-header">
-                            Datos de los productos
+                            Datos del Proveedor
                         </div>
                         <div class="card-body">
                             <form method="post">
@@ -144,9 +144,6 @@ $proveedores = $query_search->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="mb-3">
                                     <label for="Direccion">Direccion</label>
                                     <textarea type="text" class="form-control" name="direccion" id="direccion"></textarea>
-                                </div>
-                                <div class="btn-group" role="group" aria-label="">
-                                    <button type="submit" name="agregar" class="btn btn-success">Agregar</button>
                                 </div>
                             </form>
                         </div>

@@ -67,7 +67,7 @@ $rechazadas = $query_rechazadas->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     <br>
-    <h2 style="text-align: center;">Mis Pedidos</h2>
+    <h2 style="text-align: center;">Mis Pedidos Rechazados</h2>
     <br>
 
     <?php if (empty($rechazadas)): ?>

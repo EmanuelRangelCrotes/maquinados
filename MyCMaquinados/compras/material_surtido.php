@@ -51,22 +51,13 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="./sesion_usuario.php">Pagina Principal</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./pedidos.php">Pedidos de Material</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./carrito.php">carrito</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./ver_pedidos.php">Solicitud de Pedidos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./pedidos_aceptados.php">Pedidos Aceptados</a>
+                    <a class="nav-link" href="pedidos_pendientes.php">Pedidos de Almacen</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="material_surtido.php">Material Surtido</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="reporte_mensual.php">Reporte mensual</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">Cerrar Sesión</a>
@@ -79,7 +70,7 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         <div class="card card-default rounded-0 shadow">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title">Seguimiento de Solicitudes</h3>
+                    <h3 class="card-title">Seguimiento de Material</h3>
                     <div class="btn-group">
                         <a href="?filtro=todos" class="btn btn-sm btn-outline-secondary <?= $filtro == 'todos' ? 'active' : '' ?>">Todos</a>
                         <a href="?filtro=pendientes" class="btn btn-sm btn-outline-danger <?= $filtro == 'pendientes' ? 'active' : '' ?>">Pendientes</a>

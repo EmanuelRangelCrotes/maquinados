@@ -10,7 +10,7 @@ if (!isset($_SESSION['logged_in'], $_SESSION['id_usuario'], $_SESSION['rol']) ||
 }
 
 // Obtener productos disponibles
-$sql = "SELECT p.id_productos, p.sku, p.nombre, p.clase, p.descripcion, p.existencia FROM productos p";
+$sql = "SELECT id_productos, sku, nombre, clase, descripcion, existencia FROM productos ";
 $stmt = $cnnPDO->prepare($sql);
 $stmt->execute();
 $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -34,128 +34,176 @@ if (empty($productos)) {
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 text-end">
                         <button type="button" name="addPurchase" id="addPurchase"
-                            class="btn btn-primary btn-sm rounded-0"
-                            data-bs-toggle="modal" data-bs-target="#purchaseModal">
+                            class="btn btn-primary btn-sm rounded-0" data-bs-toggle="modal"
+                            data-bs-target="#purchaseModal">
                             <i class="far fa-plus-square"></i> Solicitar Material
                         </button>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-12 table-responsive">
-                        <table id="purchaseList" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nombre</th>
-                                    <th>SKU</th>
-                                    <th>Existencia</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($productos as $producto): ?>
+                <div class="row mb-3">
+                    <div class="col-md-4 ms-auto">
+                        <input type="text" id="busquedaProductos" class="form-control" align="center"
+                            placeholder="Buscar por nombre o clase...">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 table-responsive">
+                            <table id="purchaseList" class="table table-bordered table-striped">
+                                <thead>
                                     <tr>
-                                        <td><?= htmlspecialchars($producto['id_productos']) ?></td>
-                                        <td><?= htmlspecialchars($producto['nombre']) ?></td>
-                                        <td><?= htmlspecialchars($producto['sku']) ?></td>
-                                        <td><?= htmlspecialchars($producto['existencia']) ?></td>
+                                        <th>#</th>
+                                        <th>Nombre</th>
+                                        <th>SKU</th>
+                                        <th>Clase</th>
+                                        <th>Existencia</th>
                                     </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($productos as $producto): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($producto['id_productos']) ?></td>
+                                            <td><?= htmlspecialchars($producto['nombre']) ?></td>
+                                            <td><?= htmlspecialchars($producto['sku']) ?></td>
+                                            <td><?= htmlspecialchars($producto['clase']) ?></td>
+                                            <td><?= htmlspecialchars($producto['existencia']) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Modal para solicitar material -->
-<div id="purchaseModal" class="modal fade">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Solicitar Material</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="col-md-12">
-                    <form method="post" action="procesar_solicitud.php" id="solicitudForm">
-                        <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
-                        <div class="mb-3">
-                            <label for="sku">Material (SKU):</label>
-                            <select name="id_productos" id="sku" class="form-control" required>
-                                <option value="">Seleccione un material</option>
-                                <?php foreach ($productos as $producto): ?>
-                                    <option
-                                        value="<?= htmlspecialchars($producto['id_productos']) ?>"
-                                        data-nombre="<?= htmlspecialchars($producto['nombre']) ?>"
-                                        data-clase="<?= htmlspecialchars($producto['clase']) ?>"
-                                        data-descripcion="<?= htmlspecialchars($producto['descripcion']) ?>"
-                                        data-existencia="<?= htmlspecialchars($producto['existencia']) ?>">
-                                        <?= htmlspecialchars($producto['sku']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label>Nombre:</label>
-                            <input type="text" class="form-control" id="material_nombre" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label>Clase:</label>
-                            <input type="text" class="form-control" id="material_clase" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label>Descripción:</label>
-                            <input type="text" class="form-control" id="material_descripcion" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label>Existencia:</label>
-                            <input type="text" class="form-control" id="material_existencia" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="cantidad">Cantidad a solicitar:</label>
-                            <input type="number" class="form-control" name="cantidad" id="cantidad_solicitud" min="1" required>
-                            <small class="text-muted">Puedes solicitar más que la existencia actual si es necesario.</small>
-                        </div>
-                    </form>
+    <!-- Modal para solicitar material -->
+    <div id="purchaseModal" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Solicitar Material</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" form="solicitudForm" class="btn btn-primary">Solicitar</button>
-                <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <form method="post" action="procesar_solicitud.php" id="solicitudForm">
+                            <div class="mb-3">
+                                <label for="sku">SKU:</label>
+                                <input type="text" class="form-control" name="sku" id="sku" autocomplete="off">
+                                <input type="hidden" name="id_productos" id="id_productos">
+                                <!-- ← importante para el insert -->
+                                <div id="sku_suggestions" class="list-group position-absolute w-100"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Nombre:</label>
+                                <input type="text" class="form-control" id="material_nombre" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label>Clase:</label>
+                                <input type="text" class="form-control" id="material_clase" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label>Descripción:</label>
+                                <input type="text" class="form-control" id="material_descripcion" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label>Existencia:</label>
+                                <input type="text" class="form-control" id="material_existencia" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cantidad">Cantidad a solicitar:</label>
+                                <input type="number" class="form-control" name="cantidad" id="cantidad_solicitud"
+                                    min="1" required>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="solicitudForm" class="btn btn-primary">Solicitar</button>
+                    <button type="button" class="btn btn-default border btn-sm rounded-0"
+                        data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-// Autocompletar datos del material seleccionado
-document.getElementById('sku').addEventListener('change', function () {
-    const selected = this.options[this.selectedIndex];
-    const existencia = parseInt(selected.getAttribute('data-existencia')) || 0;
+    <script>
+        document.getElementById('busquedaProductos').addEventListener('keyup', function() {
+            const filtro = this.value.toLowerCase().trim();
+            const filas = document.querySelectorAll('#purchaseList tbody tr');
 
-    document.getElementById('material_nombre').value = selected.getAttribute('data-nombre') || '';
-    document.getElementById('material_clase').value = selected.getAttribute('data-clase') || '';
-    document.getElementById('material_descripcion').value = selected.getAttribute('data-descripcion') || '';
-    document.getElementById('material_existencia').value = existencia;
-    document.getElementById('cantidad_solicitud').value = 1;
-});
+            filas.forEach(fila => {
+                const nombre = fila.cells[1].textContent.toLowerCase();
+                const clase = fila.cells[3].textContent.toLowerCase();
 
-// Validación del formulario
-document.getElementById('solicitudForm').addEventListener('submit', function (e) {
-    const cantidad = parseInt(document.getElementById('cantidad_solicitud').value);
+                if (filtro === '') {
+                    fila.style.display = '';
+                } else if (nombre.includes(filtro) || clase.includes(filtro)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        });
+    </script>
 
-    if (cantidad <= 0 || isNaN(cantidad)) {
-        e.preventDefault();
-        alert("La cantidad debe ser mayor a cero.");
-        return false;
-    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const skuInput = document.getElementById('sku');
+            const suggestionsBox = document.getElementById('sku_suggestions');
 
-    return true;
-});
-</script>
+            skuInput.addEventListener('input', function() {
+                const term = this.value.trim();
+                if (term.length < 1) {
+                    suggestionsBox.innerHTML = '';
+                    return;
+                }
 
-<?php include_once './templates/footer.php'; ?>
+                fetch('buscar_sku.php?term=' + encodeURIComponent(term))
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsBox.innerHTML = ''; // Limpiar resultados anteriores
+
+                        data.forEach(item => {
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = 'list-group-item list-group-item-action';
+                            btn.textContent = item.sku + ' - ' + item.nombre;
+
+                            btn.addEventListener('click', () => {
+                                skuInput.value = item.sku;
+                                document.getElementById('id_productos').value = item.id;
+                                document.getElementById('material_nombre').value = item
+                                    .nombre;
+                                document.getElementById('material_clase').value = item
+                                    .clase;
+                                document.getElementById('material_descripcion').value =
+                                    item.descripcion;
+                                document.getElementById('material_existencia').value =
+                                    item.existencia;
+                                suggestionsBox.innerHTML =
+                                    ''; // Limpiar sugerencias tras seleccionar
+                            });
+
+                            suggestionsBox.appendChild(btn);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error al buscar SKUs:', error);
+                    });
+            });
+        });
+    </script>
+
+
+    <style>
+        #sku_suggestions {
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+    </style>
+    <?php include_once './templates/footer.php'; ?>

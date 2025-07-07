@@ -16,7 +16,6 @@ if (isset($_POST['surtir'])) {
     $accion = filter_input(INPUT_POST, 'accion');
 
     try {
-        // Obtener datos actuales
         $sql_select = "SELECT cantidad, cantidad_surtida FROM solicitar_material WHERE id_solicitud = ?";
         $stmt_select = $cnnPDO->prepare($sql_select);
         $stmt_select->execute([$id_solicitud]);
@@ -26,7 +25,6 @@ if (isset($_POST['surtir'])) {
             $solicitud['cantidad_surtida'] + $cantidad_surtir :
             $cantidad_surtir;
 
-        // Determinar estatus
         if ($nueva_cantidad_surtida >= $solicitud['cantidad']) {
             $estatus = 'Surtido';
         } elseif ($nueva_cantidad_surtida > 0) {
@@ -35,19 +33,17 @@ if (isset($_POST['surtir'])) {
             $estatus = 'Pendiente';
         }
 
-        // Actualizar solicitud
         $sql = "UPDATE solicitar_material 
                 SET cantidad_surtida = ?, estatus = ?, fecha_surtido = NOW()
                 WHERE id_solicitud = ?";
         $stmt = $cnnPDO->prepare($sql);
         $stmt->execute([$nueva_cantidad_surtida, $estatus, $id_solicitud]);
 
-        // Actualizar inventario si se surte
         if ($cantidad_surtir > 0) {
             $sql_inventario = "UPDATE productos p
-                              JOIN solicitar_material sm ON p.id_productos = sm.id_productos
-                              SET p.existencia = p.existencia + ?
-                              WHERE sm.id_solicitud = ?";
+                               JOIN solicitar_material sm ON p.id_productos = sm.id_productos
+                               SET p.existencia = p.existencia + ?
+                               WHERE sm.id_solicitud = ?";
             $stmt_inventario = $cnnPDO->prepare($sql_inventario);
             $stmt_inventario->execute([$cantidad_surtir, $id_solicitud]);
         }
@@ -120,35 +116,31 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
                                 </td>
                                 <td><?= htmlspecialchars($solicitud['fecha']) ?></td>
                                 <td>
-                                    <form method="post" class="row g-2">
-                                        <input type="hidden" name="id_solicitud" value="<?= $solicitud['id_solicitud'] ?>">
-                                        <div class="col-5">
-                                            <select name="accion" class="form-select form-select-sm">
-                                                <option value="agregar">Agregar</option>
-                                                <option value="actualizar">Actualizar</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-5">
-                                           <input type="number" name="cantidad_surtir"
-    class="form-control form-control-sm"
-    min="1"
-    value="<?= max(0, $solicitud['cantidad'] - $solicitud['cantidad_surtida']) ?>">
-
-                                        </div>
-                                        <div class="col-2">
-                                            <button type="submit" name="surtir" class="btn btn-sm btn-primary">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        </div>
-                                    </form>
+                                    <?php if ($solicitud['estatus'] !== 'Surtido'): ?>
+                                        <form method="post" class="row g-2">
+                                            <input type="hidden" name="id_solicitud" value="<?= $solicitud['id_solicitud'] ?>">
+                                            <div class="col-5">
+                                                <select name="accion" class="form-select form-select-sm">
+                                                    <option value="agregar">Agregar</option>
+                                                    <option value="actualizar">Actualizar</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-5">
+                                                <input type="number" name="cantidad_surtir"
+                                                       class="form-control form-control-sm"
+                                                       min="1"
+                                                       value="<?= max(0, $solicitud['cantidad'] - $solicitud['cantidad_surtida']) ?>">
+                                            </div>
+                                            <div class="col-2">
+                                                <button type="submit" name="surtir" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    <?php else: ?>
+                                        <span class="text-muted">No modificable</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
 <?php include_once './templates/footer.php'; ?>

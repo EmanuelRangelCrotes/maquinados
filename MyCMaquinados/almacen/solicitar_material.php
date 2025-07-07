@@ -9,12 +9,16 @@ $usuario_id = $_SESSION['id_usuario'];
 // Validar si el formulario fue enviado
 if (isset($_POST['agregar'])) {
     // Sanitizar y validar los datos ingresados por el usuario
-    $id_productos = isset($_POST['id_productos']) ? htmlspecialchars(trim($_POST['id_productos']), ENT_QUOTES, 'UTF-8') : '';
+    $id_pedidos = isset($_POST['id_pedidos']) ? htmlspecialchars(trim($_POST['id_pedidos']), ENT_QUOTES, 'UTF-8') : '';
     $cantidad = isset($_POST['cantidad']) ? htmlspecialchars(trim($_POST['cantidad']), ENT_QUOTES, 'UTF-8') : '';
     $fecha = date('Y-m-d'); // Fecha actual
+    $id_productos = isset($_POST['id_productos']) ? htmlspecialchars(trim($_POST['id_productos']), ENT_QUOTES, 'UTF-8') : '';
+    $usuario_id = $_SESSION['id_usuario'];
+
 
     // Validar que los campos no estén vacíos
     if (
+        empty($id_productos) ||
         empty($cantidad)
     ) {
         $_SESSION['toastr'] = [
@@ -27,9 +31,9 @@ if (isset($_POST['agregar'])) {
 
     try {
         // Insertar el producto en la base de datos
-        $sql = "INSERT INTO solicitar_material (id_productos,cantidad, fecha) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO pedidos_taller (id_pedidos,cantidad, fecha, id_productos, id_usuario) VALUES (?, ?, ?, ?, ?)";
         $query = $cnnPDO->prepare($sql);
-        $query->execute([$id_productos, $cantidad, $fecha]);
+        $query->execute([$id_pedidos, $cantidad, $fecha, $id_productos, $usuario_id]);
 
         // Mensaje de éxito
         $_SESSION['toastr'] = [
@@ -62,12 +66,14 @@ if (!isset($_SESSION['name'])) {
     exit();
 }
 
-$sql_search = "SELECT sm.id_solicitud, sm.cantidad, sm.fecha, p.id_productos, p.nombre,p.sku, p.clase, p.descripcion, p.existencia
-FROM solicitar_material sm
-JOIN productos p ON sm.id_productos = p.id_productos
-ORDER BY id_solicitud DESC";
+$sql_search = "SELECT pt.id_pedidos, pt.cantidad, pt.fecha, pt.estatus, u.id_usuario, p.id_productos, p.nombre,p.sku, p.clase, p.descripcion, p.existencia
+FROM pedidos_taller pt
+JOIN productos p ON pt.id_productos = p.id_productos
+JOIN users u ON pt.id_usuario = u.id_usuario
+WHERE pt.id_usuario = :usuario_id
+ORDER BY fecha DESC";
 $query_search = $cnnPDO->prepare($sql_search);
-$query_search->execute();
+$query_search->execute(['usuario_id' => $usuario_id]);
 $solicitudes = $query_search->fetchAll(PDO::FETCH_ASSOC);
 
 
@@ -83,7 +89,7 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
             <div class="card-header">
                 <div class="row">
                     <div class="col-lg-10 col-md-10 col-sm-8 col-xs-6">
-                        <h3 class="card-title">Lista de Solicitudes</h3>
+                        <h3 class="card-title">Mis Solicitudes</h3>
                     </div>
 
                     <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 text-end">
@@ -93,7 +99,16 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
                             Solicitar Material
                         </button>
                     </div>
-
+                    <div class="dropdown d-inline me-2">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Pedidos
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="mis_pedidos_pendientes.php">Pedidos Pendientes</a></li>
+                            <li><a class="dropdown-item" href="mis_pedidos_aceptados.php">Pedidos Aceptados</a></li>
+                            <li><a class="dropdown-item" href="mis_pedidos_rechazados.php">Pedidos Rechazados</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -109,19 +124,21 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Descripción</th>
                                     <th>Cantidad</th>
                                     <th>Existencia</th>
+                                    <th>Estatus</th>
                                     <th>Fecha</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($solicitudes as $solicitud): ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($solicitud['id_solicitud'], ENT_QUOTES, 'UTF-8') ?></td>
+                                        <td><?= htmlspecialchars($solicitud['id_pedidos'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td><?= htmlspecialchars($solicitud['nombre'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td><?= htmlspecialchars($solicitud['sku'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td><?= htmlspecialchars($solicitud['clase'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td><?= htmlspecialchars($solicitud['descripcion'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td><?= htmlspecialchars($solicitud['cantidad'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td><?= htmlspecialchars($solicitud['existencia'], ENT_QUOTES, 'UTF-8') ?></td>
+                                        <td><?= htmlspecialchars($solicitud['estatus'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td><?= htmlspecialchars($solicitud['fecha'], ENT_QUOTES, 'UTF-8') ?></td>
 
 
@@ -153,39 +170,31 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="card-body">
                             <form method="post" id="solicitudForm">
+                                <input type="hidden" name="id_productos" id="id_productos">
+
                                 <div class="mb-3">
                                     <label for="sku">SKU:</label>
-                                    <select class="form-control" name="id_productos" id="sku">
-                                        <option value="">Seleccione un Material</option>
-                                        <?php foreach ($productos as $producto): ?>
-                                            <option
-                                                value="<?= htmlspecialchars($producto['id_productos'], ENT_QUOTES, 'UTF-8') ?>"
-                                                data-nombre="<?= htmlspecialchars($producto['nombre'], ENT_QUOTES, 'UTF-8') ?>"
-                                                data-clase="<?= htmlspecialchars($producto['clase'], ENT_QUOTES, 'UTF-8') ?>"
-                                                data-descripcion="<?= htmlspecialchars($producto['descripcion'], ENT_QUOTES, 'UTF-8') ?>"
-                                                data-existencia="<?= htmlspecialchars($producto['existencia'], ENT_QUOTES, 'UTF-8') ?>">
-                                                <?= htmlspecialchars($producto['sku'], ENT_QUOTES, 'UTF-8') ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                    <input type="text" class="form-control" name="sku" id="sku" autocomplete="off">
+                                    <div id="sku_suggestions" class="list-group"></div>
                                 </div>
+
                                 <div class="mb-3">
                                     <label for="nombre">Nombre:</label>
-                                    <input type="text" class="form-control" name="nombre" id="material_nombre">
+                                    <input type="text" class="form-control" name="nombre" id="material_nombre" readonly>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="clase">Clase:</label>
-                                    <input type="text" class="form-control" name="clase" id="material_clase">
+                                    <input type="text" class="form-control" name="clase" id="material_clase" readonly>
                                 </div>
                                 <div class="mb-3">
                                     <label for="descripcion">Descripción:</label>
                                     <input type="text" class="form-control" name="descripcion"
-                                        id="material_descripcion">
+                                        id="material_descripcion" readonly>
                                 </div>
                                 <div class="mb-3">
                                     <label for="cantidad">Cantidad:</label>
-                                    <input type="number" class="form-control" name="cantidad" id="cantidad">
+                                    <input type="number" class="form-control" name="cantidad" id="cantidad" autocomplete="off">
                                 </div>
                             </form>
                         </div>
@@ -202,12 +211,55 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
-    document.getElementById('sku').addEventListener('change', function() {
-        var selected = this.options[this.selectedIndex];
-        document.getElementById('material_nombre').value = selected.getAttribute('data-nombre');
-        document.getElementById('material_clase').value = selected.getAttribute('data-clase');
-        document.getElementById('material_descripcion').value = selected.getAttribute('data-descripcion');
+    document.addEventListener('DOMContentLoaded', function() {
+        const skuInput = document.getElementById('sku');
+        const suggestionsBox = document.getElementById('sku_suggestions');
+
+        skuInput.addEventListener('input', function() {
+            const term = this.value.trim();
+            if (term.length < 1) {
+                suggestionsBox.innerHTML = '';
+                return;
+            }
+
+            fetch('buscar_sku.php?term=' + encodeURIComponent(term))
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsBox.innerHTML = ''; // Limpiar resultados anteriores
+
+                    data.forEach(item => {
+                        const btn = document.createElement('button'); // Creamos el botón
+                        btn.type = 'button';
+                        btn.className = 'list-group-item list-group-item-action';
+                        btn.textContent = item.sku + ' - ' + item.nombre;
+
+                        btn.addEventListener('click', () => {
+                            skuInput.value = item.sku;
+                            document.getElementById('id_productos').value = item.id;
+                            document.getElementById('material_nombre').value = item.nombre;
+                            document.getElementById('material_clase').value = item.clase;
+                            document.getElementById('material_descripcion').value = item.descripcion;
+                            suggestionsBox.innerHTML = ''; // Limpiar sugerencias tras seleccionar
+                        });
+
+                        suggestionsBox.appendChild(btn); // Añadir el botón a la lista
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al buscar SKUs:', error);
+                });
+        });
     });
 </script>
 
+
+<style>
+    #sku_suggestions {
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+</style>
 <?php include_once './templates/footer.php'; ?>

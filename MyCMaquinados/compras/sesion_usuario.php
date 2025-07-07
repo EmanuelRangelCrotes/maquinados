@@ -46,11 +46,13 @@ $usuario_id = $_SESSION['id_usuario'];
                     <li class="nav-item">
                         <a class="nav-link" href="./sesion_usuario.php">Pagina Principal</a>
                     </li>
-                  
-                     <li class="nav-item">
+                    <li class="nav-item">
+                        <a class="nav-link" href="pedidos_pendientes.php">Pedidos de Almacen</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="material_surtido.php">Material Surtido</a>
                     </li>
-                     <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="reporte_mensual.php">Reporte mensual</a>
                     </li>
                     <li class="nav-item">

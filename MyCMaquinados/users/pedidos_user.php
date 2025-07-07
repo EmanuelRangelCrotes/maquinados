@@ -44,7 +44,7 @@ $pendientes = $query_pendientes->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     <br>
-    <h2 style="text-align: center;">Mis Pedidos</h2>
+    <h2 style="text-align: center;">Mis Pedidos Pendientes</h2>
     <br>
     <?php if (empty($pendientes)): ?>
         <h2 class="text-danger text-center">No hay solicitudes registradas.</h2>

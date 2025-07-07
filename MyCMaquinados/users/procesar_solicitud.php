@@ -34,7 +34,7 @@ try {
         exit();
     }
 
-    // ✅ Ya no se valida si hay existencia suficiente
+    // Ya no se valida si hay existencia suficiente
 
     // Iniciar transacción
     $cnnPDO->beginTransaction();

@@ -41,7 +41,7 @@ $aceptadas = $query_aceptadas->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     <br>
-    <h2 style="text-align: center;">Mis Pedidos</h2>
+    <h2 style="text-align: center;">Mis Pedidos Aceptados</h2>
     <br>
     <?php if (empty($aceptadas)): ?>
         <h2 class="text-danger text-center">No hay solicitudes registradas.</h2>

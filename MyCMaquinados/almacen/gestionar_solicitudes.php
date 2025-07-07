@@ -102,7 +102,7 @@ $sql = "SELECT s.id_solicitud, s.cantidad, s.fecha_solicitud,s.estado,
         JOIN productos p ON s.id_productos = p.id_productos
         JOIN users u ON s.id_usuario = u.id_usuario
         WHERE s.estado = 'Pendiente'
-        ORDER BY s.fecha_solicitud ASC";
+        ORDER BY s.fecha_solicitud DESC";
 $query = $cnnPDO->query($sql);
 $pendientes = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
