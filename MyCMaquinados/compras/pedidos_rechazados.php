@@ -33,7 +33,9 @@ $pendientes = $query_pendientes->fetchAll(PDO::FETCH_ASSOC);
         <h1 class="navbar-brand">Compras</h1>
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
-                
+                <li class="nav-item">
+                    <a class="nav-link" href="./sesion_usuario.php">Pagina Principal</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="pedidos_pendientes.php">Pedidos de Almacen</a>
                 </li>
@@ -87,7 +89,7 @@ $pendientes = $query_pendientes->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= $solicitud['sku'] ?></td>
                         <td><?= $solicitud['cantidad'] ?></td>
                         <td><?= $solicitud['existencia'] ?></td>
-                        
+
                     </tr>
                 </tbody>
             </table>

@@ -54,19 +54,13 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
                     <a class="nav-link" href="./sesion_usuario.php">Pagina Principal</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./pedidos.php">Pedidos de Material</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./carrito.php">carrito</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./ver_pedidos.php">Solicitud de Pedidos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./pedidos_aceptados.php">Pedidos Aceptados</a>
+                    <a class="nav-link" href="pedidos_pendientes.php">Pedidos de Almacen</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="material_surtido.php">Material Surtido</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="reporte_mensual.php">Reporte mensual</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">Cerrar Sesión</a>
@@ -155,29 +149,29 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 </div>
 <script src="script.js"></script>
 <script>
-function cargarSolicitudes() {
-    fetch('get_pedidos_compras.php')
-        .then(response => {
-            if (response.status === 401) {
-                // Redirigir si sesión expira
-                window.location.href = '../login.php';
-            }
-            return response.text();
-        })
-        .then(html => {
-            document.getElementById('contenedor-solicitudes').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error al cargar solicitudes:', error);
-            document.getElementById('contenedor-solicitudes').innerHTML = '<p class="text-danger">Error al cargar las solicitudes.</p>';
-        });
-}
+    function cargarSolicitudes() {
+        fetch('get_pedidos_compras.php')
+            .then(response => {
+                if (response.status === 401) {
+                    // Redirigir si sesión expira
+                    window.location.href = '../login.php';
+                }
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('contenedor-solicitudes').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error al cargar solicitudes:', error);
+                document.getElementById('contenedor-solicitudes').innerHTML = '<p class="text-danger">Error al cargar las solicitudes.</p>';
+            });
+    }
 
-// Cargar inmediatamente al abrir la página
-cargarSolicitudes();
+    // Cargar inmediatamente al abrir la página
+    cargarSolicitudes();
 
-// Refrescar cada 30 segundos automáticamente
-setInterval(cargarSolicitudes, 30000);
+    // Refrescar cada 30 segundos automáticamente
+    setInterval(cargarSolicitudes, 30000);
 </script>
 
 </body>
