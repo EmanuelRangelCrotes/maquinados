@@ -143,4 +143,11 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
                                 </td>
                             </tr>
                         <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include_once './templates/footer.php'; ?>

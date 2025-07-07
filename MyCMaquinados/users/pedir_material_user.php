@@ -5,7 +5,7 @@ require_once './db_conexion.php';
 
 // Verificación de sesión mejorada
 if (!isset($_SESSION['logged_in'], $_SESSION['id_usuario'], $_SESSION['rol']) || $_SESSION['rol'] !== 'user') {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 
@@ -78,57 +78,65 @@ if (empty($productos)) {
         </div>
     </div>
 
-    <!-- Modal para solicitar material -->
-    <div id="purchaseModal" class="modal fade">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Solicitar Material</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- Modal para solicitar material -->
+<div id="purchaseModal" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Solicitar Material</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <form method="post" action="procesar_solicitud.php" id="solicitudForm">
+                        <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
+                        <div class="mb-3">
+                            <label for="sku">Material (SKU):</label>
+                            <select name="id_productos" id="sku" class="form-control" required>
+                                <option value="">Seleccione un material</option>
+                                <?php foreach ($productos as $producto): ?>
+                                    <option
+                                        value="<?= htmlspecialchars($producto['id_productos']) ?>"
+                                        data-nombre="<?= htmlspecialchars($producto['nombre']) ?>"
+                                        data-clase="<?= htmlspecialchars($producto['clase']) ?>"
+                                        data-descripcion="<?= htmlspecialchars($producto['descripcion']) ?>"
+                                        data-existencia="<?= htmlspecialchars($producto['existencia']) ?>">
+                                        <?= htmlspecialchars($producto['sku']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Nombre:</label>
+                            <input type="text" class="form-control" id="material_nombre" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label>Clase:</label>
+                            <input type="text" class="form-control" id="material_clase" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label>Descripción:</label>
+                            <input type="text" class="form-control" id="material_descripcion" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label>Existencia:</label>
+                            <input type="text" class="form-control" id="material_existencia" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cantidad">Cantidad a solicitar:</label>
+                            <input type="number" class="form-control" name="cantidad" id="cantidad_solicitud" min="1" required>
+                            <small class="text-muted">Puedes solicitar más que la existencia actual si es necesario.</small>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-body">
-                    <div class="col-md-12">
-                        <form method="post" action="procesar_solicitud.php" id="solicitudForm">
-                            <div class="mb-3">
-                                <label for="sku">SKU:</label>
-                                <input type="text" class="form-control" name="sku" id="sku" autocomplete="off">
-                                <input type="hidden" name="id_productos" id="id_productos">
-                                <!-- ← importante para el insert -->
-                                <div id="sku_suggestions" class="list-group position-absolute w-100"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label>Nombre:</label>
-                                <input type="text" class="form-control" id="material_nombre" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label>Clase:</label>
-                                <input type="text" class="form-control" id="material_clase" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label>Descripción:</label>
-                                <input type="text" class="form-control" id="material_descripcion" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label>Existencia:</label>
-                                <input type="text" class="form-control" id="material_existencia" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label for="cantidad">Cantidad a solicitar:</label>
-                                <input type="number" class="form-control" name="cantidad" id="cantidad_solicitud"
-                                    min="1" required>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" form="solicitudForm" class="btn btn-primary">Solicitar</button>
-                    <button type="button" class="btn btn-default border btn-sm rounded-0"
-                        data-bs-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="solicitudForm" class="btn btn-primary">Solicitar</button>
+                <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
 
     <script>
         document.getElementById('busquedaProductos').addEventListener('keyup', function() {

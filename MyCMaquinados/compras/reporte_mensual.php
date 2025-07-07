@@ -76,44 +76,44 @@ $reporte = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     <div class="container mt-5">
         <h2 class="text-center mb-4">Reporte Mensual de Material Surtido</h2>
 
-        <?php if (empty($reporte)): ?>
-            <div class="alert alert-info">No hay datos de surtido registrados.</div>
-        <?php else: ?>
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Mes</th>
-                        <th>ID Producto</th>
-                        <th>Producto</th>
-                        <th>Precio Unitario</th>
-                        <th>Cantidad Total</th>
-                        <th>Costo Total</th>
+    <?php if (empty($reporte)): ?>
+        <div class="alert alert-info">No hay datos de surtido registrados.</div>
+    <?php else: ?>
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Mes</th>
+                    <th>ID Producto</th>
+                    <th>Producto</th>
+                    <th>Precio Unitario</th>
+                    <th>Cantidad Total</th>
+                    <th>Costo Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $mes_actual = '';
+                foreach ($reporte as $fila):
+                    if ($fila['mes'] !== $mes_actual):
+                        $mes_actual = $fila['mes'];
+                ?>
+                    <tr class="table-primary fw-bold">
+                        <td colspan="6"><?= mb_strtoupper(htmlspecialchars($fila['mes_texto']), 'UTF-8') ?></td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $mes_actual = '';
-                    foreach ($reporte as $fila):
-                        if ($fila['mes'] !== $mes_actual):
-                            $mes_actual = $fila['mes'];
-                    ?>
-                            <tr class="table-primary fw-bold">
-                                <td colspan="6"><?= mb_strtoupper(htmlspecialchars($fila['mes_texto']), 'UTF-8') ?></td>
-                            </tr>
-                        <?php endif; ?>
-                        <tr>
-                            <td><?= htmlspecialchars($fila['mes']) ?></td>
-                            <td><?= htmlspecialchars($fila['id_productos']) ?></td>
-                            <td><?= htmlspecialchars($fila['producto']) ?></td>
-                            <td>$<?= number_format($fila['precio_unitario'], 2) ?></td>
-                            <td><?= htmlspecialchars($fila['cantidad_total']) ?></td>
-                            <td>$<?= number_format($fila['costo_total'], 2) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php endif; ?>
-    </div>
+                <?php endif; ?>
+                    <tr>
+                        <td><?= htmlspecialchars($fila['mes']) ?></td>
+                        <td><?= htmlspecialchars($fila['id_productos']) ?></td>
+                        <td><?= htmlspecialchars($fila['producto']) ?></td>
+                        <td>$<?= number_format($fila['precio_unitario'], 2) ?></td>
+                        <td><?= htmlspecialchars($fila['cantidad_total']) ?></td>
+                        <td>$<?= number_format($fila['costo_total'], 2) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</div>
 </body>
 
 </html>

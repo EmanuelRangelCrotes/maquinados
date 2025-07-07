@@ -13,7 +13,7 @@ if (
 ) {
 
     error_log("Intento de acceso no autorizado desde " . $_SERVER['REMOTE_ADDR']);
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 // Validar si el formulario fue enviado
@@ -91,7 +91,7 @@ $existencia = isset($_POST['existencia']) ? htmlspecialchars($_POST['existencia'
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['name'])) {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 
@@ -271,68 +271,68 @@ if (isset($_POST['añadir_descripcion'])) {
     </div>
 
 
-    <div id="purchaseModal" class="modal fade">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"> Agregar Producto</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-md-8" style="margin: 0 auto; margin-top: 50px;">
-                        <div class="card">
-                            <div class="card-header">
-                                Datos de los productos
-                            </div>
-                            <div class="card-body">
-                                <form method="post" id="productForm">
-                                    <div class="mb-3">
-                                        <label for="name">Nombre:</label>
-                                        <input type="text" class="form-control" name="nombre" id="nombre">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="sku">SKU</label>
-                                        <input type="text" class="form-control" name="sku" id="sku">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="clase">Clase</label>
-                                        <input type="text" class="form-control" name="clase" id="clase" autocomplete="off">
-                                        <div id="clase-suggestions" class="suggestions-container"></div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="descripcion">Descripción</label>
-                                        <input type="text" class="form-control" name="descripcion" id="descripcion" autocomplete="off">
-                                        <div id="descripcion-suggestions" class="suggestions-container"></div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="unidad_medida">Unidad de Medida</label>
-                                        <select type="text" class="form-control" name="unidad_medida" id="unidad_medida">
-                                            <option value="">Seleccione la Unida de Medida</option>
-                                            <option value="KG">KG</option>
-                                            <option value="LT">LT</option>
-                                            <option value="PZ">PZ</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="existencia">Existencia</label>
-                                        <input type="text" class="form-control" name="existencia" id="existencia">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="precio">Precio</label>
-                                        <input type="text" class="form-control" name="precio" id="precio">
-                                    </div>
-                                </form>
-                            </div>
+<div id="purchaseModal" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Agregar Producto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-8" style="margin: 0 auto; margin-top: 50px;">
+                    <div class="card">
+                        <div class="card-header">
+                            Datos de los productos
+                        </div>
+                        <div class="card-body">
+                            <form method="post" id="productForm">
+                                <div class="mb-3">
+                                    <label for="name">Nombre:</label>
+                                    <input type="text" class="form-control" name="nombre" id="nombre">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="sku">SKU</label>
+                                    <input type="text" class="form-control" name="sku" id="sku">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="clase">Clase</label>
+                                    <input type="text" class="form-control" name="clase" id="clase" autocomplete="off">
+                                    <div id="clase-suggestions" class="suggestions-container"></div>
+                                </div>
+                               <div class="mb-3">
+                                    <label for="descripcion">Descripción</label>
+                                    <input type="text" class="form-control" name="descripcion" id="descripcion" autocomplete="off">
+                                    <div id="descripcion-suggestions" class="suggestions-container"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="unidad_medida">Unidad de Medida</label>
+                                    <select type="text" class="form-control" name="unidad_medida" id="unidad_medida">
+                                        <option value="">Seleccione la Unida de Medida</option>
+                                        <option value="KG">KG</option>
+                                        <option value="LT">LT</option>
+                                        <option value="PZ">PZ</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="existencia">Existencia</label>
+                                    <input type="text" class="form-control" name="existencia" id="existencia">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="precio">Precio</label>
+                                    <input type="text" class="form-control" name="precio" id="precio">
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" name="agregar" class="btn btn-primary" form="productForm">Agregar</button>
-                    <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="agregar" class="btn btn-primary" form="productForm">Agregar</button>
+                <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Modales para cada opción -->
     <div class="modal fade" id="modalPendientes" tabindex="-1" aria-labelledby="modalPendientesLabel" aria-hidden="true">
