@@ -1,4 +1,5 @@
 <?php
+include_once './templates/header.php';
 require_once './db_conexion.php';
 session_start();
 $id_usuario = $_SESSION['id_usuario'];
@@ -18,39 +19,7 @@ $pendientes = $query_pendientes->fetchAll(PDO::FETCH_ASSOC);
 
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-    <div class="container-fluid">
-        <h1 class="navbar-brand">Compras</h1>
-        <div class="collapse navbar-collapse" id="navbarColor01">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="./sesion_usuario.php">Pagina Principal</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pedidos_pendientes.php">Pedidos de Almacen</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="material_surtido.php">Material Surtido</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="reporte_mensual.php">Reporte mensual</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="logout.php">Cerrar Sesión</a>
-                </li>
-        </div>
-    </div>
-</nav>
 <div class="dropdown d-inline me-2">
     <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
         Pedidos
@@ -97,6 +66,4 @@ $pendientes = $query_pendientes->fetchAll(PDO::FETCH_ASSOC);
     <?php endforeach; ?>
 <?php endif; ?>
 
-</body>
-
-</html>
+<?php include_once './templates/footer.php'; ?>

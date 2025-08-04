@@ -96,7 +96,7 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
                         <button type="button" name="addPurchase" id="addPurchase"
                             class="btn btn-primary btn-sm rounded-0" data-bs-toggle="modal"
                             data-bs-target="#purchaseModal">
-                            Solicitar Material
+                            <i class="far fa-plus-square"></i> Solicitar Material
                         </button>
                     </div>
                     <div class="dropdown d-inline me-2">
@@ -155,36 +155,36 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
-function cargarSolicitudes() {
-    fetch('get_pedidos_almacen.php')
-        .then(response => {
-            if (response.status === 401) {
-                // Redirigir si sesión expira
-                window.location.href = '../login.php';
-            }
-            return response.text();
-        })
-        .then(html => {
-            document.getElementById('contenedor-solicitudes').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error al cargar solicitudes:', error);
-            document.getElementById('contenedor-solicitudes').innerHTML = '<p class="text-danger">Error al cargar las solicitudes.</p>';
-        });
-}
+    function cargarSolicitudes() {
+        fetch('get_pedidos_almacen.php')
+            .then(response => {
+                if (response.status === 401) {
+                    // Redirigir si sesión expira
+                    window.location.href = '../login.php';
+                }
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('contenedor-solicitudes').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error al cargar solicitudes:', error);
+                document.getElementById('contenedor-solicitudes').innerHTML = '<p class="text-danger">Error al cargar las solicitudes.</p>';
+            });
+    }
 
-// Cargar inmediatamente al abrir la página
-cargarSolicitudes();
+    // Cargar inmediatamente al abrir la página
+    cargarSolicitudes();
 
-// Refrescar cada 30 segundos automáticamente
-setInterval(cargarSolicitudes, 30000);
+    // Refrescar cada 30 segundos automáticamente
+    setInterval(cargarSolicitudes, 30000);
 </script>
 
 <div id="purchaseModal" class="modal fade">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Solicitar Material</h4>
+                <h4 class="modal-title"><i class="far fa-plus-square"></i> Solicitar Material</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">

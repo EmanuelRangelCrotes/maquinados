@@ -2,7 +2,7 @@
 session_start();
 header('Content-Type: text/html; charset=utf-8');
 
-if (!isset($_SESSION['name']) || $_SESSION['rol'] !== 'user') {
+if (!isset($_SESSION['name']) || $_SESSION['rol'] !== 'tecnico') {
     http_response_code(401); // No autorizado
     exit("Sesión expirada");
 }

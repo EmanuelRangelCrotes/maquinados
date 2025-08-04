@@ -122,7 +122,7 @@ $proveedores = $query_search->fetchAll(PDO::FETCH_ASSOC);
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><i class="fa fa-plus"></i> Agregar Proveedor</h4>
+                <h4 class="modal-title"><i class="far fa-plus-square"></i> Agregar Proveedor</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">

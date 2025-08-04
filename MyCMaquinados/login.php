@@ -29,7 +29,6 @@ if (isset($_POST['login'])) {
             'type' => 'error',
             'message' => 'El email ingresado no es válido.'
         ];
-        header('Location: login.php');
         exit();
     }
 
@@ -71,7 +70,6 @@ if (isset($_POST['login'])) {
             'type' => 'error',
             'message' => 'Error: ' . $e->getMessage()
         ];
-        header('Location: login.php');
         exit();
     }
 }
@@ -84,9 +82,15 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
+    <!-- CSS primero -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- JavaScript después, en ORDEN CORRECTO -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
 </head>
 
 <body>
@@ -113,17 +117,18 @@ if (isset($_POST['login'])) {
     <div class="col-md-4" style="margin: 0 auto; margin-top: 50px;">
         <div>
             <form method="post">
-                <label class="form-label mt-4">Inicia Sesión</label>
+                <h4 class="form-label mt-4">Inicia Sesion</h4>
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@example.com" required>
-                    <label for="floatingInput">Email</label>
+                    <input type="email" class="form-control" name="email" placeholder="name@example.com">
+                    <label for="email"><i class="fa-regular fa-envelope"></i> Email</label>
                 </div>
                 <div class="form-floating">
-                    <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" autocomplete="off" required>
-                    <label for="floatingPassword">Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password" autocomplete="off">
+                    <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3" name="login">Ingresa</button>
+                <button type="submit" class="btn btn-primary mt-3" name="login">Registrar</button>
             </form>
+
         </div>
     </div>
 
@@ -148,4 +153,5 @@ if (isset($_POST['login'])) {
         });
     </script>
 </body>
+
 </html>

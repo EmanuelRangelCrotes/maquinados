@@ -1,4 +1,5 @@
 <?php
+include_once 'templates/header.php';
 require_once './db_conexion.php';
 session_start();
 $id_usuario = $_SESSION['id_usuario'];
@@ -26,6 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedidos'], $_POST[
         $query_update = $cnnPDO->prepare($sql_update);
         $query_update->execute([$nuevo_estatus, $id_pedidos]);
 
+        
+
         // Obtén los datos del pedido aceptado
         $sql_select = "SELECT cantidad, fecha, id_productos FROM pedidos_taller WHERE id_pedidos = ?";
         $query_select = $cnnPDO->prepare($sql_select);
@@ -33,17 +36,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedidos'], $_POST[
         $pedido = $query_select->fetch(PDO::FETCH_ASSOC);
 
         if ($pedido) {
-            // Inserta en solicitar_material
-            $sql_insert = "INSERT INTO solicitar_material (id_pedidos, id_productos, cantidad, cantidad_surtida, estatus, fecha)
-                           VALUES (?, ?, ?, 0, 'Pendiente', ?)";
+            // Obtén el precio actual del producto
+            $sql_precio = "SELECT precio FROM productos WHERE id_productos = ?";
+            $query_precio = $cnnPDO->prepare($sql_precio);
+            $query_precio->execute([$pedido['id_productos']]);
+            $row_precio = $query_precio->fetch(PDO::FETCH_ASSOC);
+            $precio_unitario = $row_precio ? $row_precio['precio'] : 0;
+
+            // Inserta en solicitar_material con todos los datos
+            $sql_insert = "INSERT INTO solicitar_material (id_pedidos, id_productos, cantidad, cantidad_surtida, estatus, fecha, precio_unitario)
+                   VALUES (?, ?, ?, 0, 'Pendiente', ?, ?)";
             $query_insert = $cnnPDO->prepare($sql_insert);
             $query_insert->execute([
                 $id_pedidos,
                 $pedido['id_productos'],
                 $pedido['cantidad'],
-                $pedido['fecha']
+                $pedido['fecha'],
+                $precio_unitario
             ]);
-        };
+        }
 
         $_SESSION['toastr'] = [
             'type' => 'success',
@@ -67,39 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedidos'], $_POST[
     };
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-    <div class="container-fluid">
-        <h1 class="navbar-brand">Compras</h1>
-        <div class="collapse navbar-collapse" id="navbarColor01">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="./sesion_usuario.php">Pagina Principal</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="pedidos_pendientes.php">Pedidos de Almacen</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="material_surtido.php">Material Surtido</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="reporte_mensual.php">Reporte mensual</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="logout.php">Cerrar Sesión</a>
-                </li>
-        </div>
-    </div>
-</nav>
 <div class="dropdown d-inline me-2">
     <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
         Pedidos
@@ -142,11 +121,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedidos'], $_POST[
                         <td>
                             <form method="post" style="display:inline;">
                                 <input type="hidden" name="id_pedidos" value="<?= $solicitud['id_pedidos'] ?>">
-                                <button type="submit" name="accion" value="aceptar" class="btn btn-success btn-sm">Aceptar</button>
+                                <button type="submit" name="accion" value="aceptar" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i> Aceptar</button>
                             </form>
                             <form method="post" style="display:inline;">
                                 <input type="hidden" name="id_pedidos" value="<?= $solicitud['id_pedidos'] ?>">
-                                <button type="submit" name="accion" value="rechazar" class="btn btn-danger btn-sm">Rechazar</button>
+                                <button type="submit" name="accion" value="rechazar" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> Rechazar</button>
                             </form>
                         </td>
                     </tr>
@@ -156,6 +135,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedidos'], $_POST[
     <?php endforeach; ?>
 <?php endif; ?>
 
-</body>
-
-</html>
+<?php include_once 'templates/footer.php'; ?>

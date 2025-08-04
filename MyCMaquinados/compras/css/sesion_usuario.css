@@ -1,0 +1,11 @@
+.btn-info{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 100%;
+    width: 100vh;
+    height: 100vh;
+    padding-top: 100px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}

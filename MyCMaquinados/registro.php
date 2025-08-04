@@ -9,9 +9,10 @@ if (isset($_POST['registrar'])) {
     $name = htmlspecialchars(trim($_POST['name']), ENT_QUOTES, 'UTF-8'); // Escapar caracteres especiales
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL); // Sanitizar el email
     $password = trim($_POST['password']); // Eliminar espacios en blanco al inicio y final
+    $rol = htmlspecialchars(trim($_POST['rol']), ENT_QUOTES, 'UTF-8'); // Escapar caracteres especiales
 
     // Validar que los campos no estén vacíos
-    if (empty($name) || empty($email) || empty($password)) {
+    if (empty($name) || empty($email) || empty($password) || empty($rol)) {
         $_SESSION['toastr'] = [
             'type' => 'error',
             'message' => 'Todos los campos son obligatorios.'
@@ -43,6 +44,8 @@ if (isset($_POST['registrar'])) {
     // Hashear la contraseña
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
+
+
     try {
         // Verificar si el email ya está registrado
         $sql_check = "SELECT id_usuario FROM users WHERE email = ?";
@@ -59,9 +62,9 @@ if (isset($_POST['registrar'])) {
         }
 
         // Insertar el nuevo usuario en la base de datos
-        $sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO users (name, email, password, rol) VALUES (?, ?, ?, ?)";
         $query = $cnnPDO->prepare($sql);
-        $query->execute([$name, $email, $hashed_password]);
+        $query->execute([$name, $email, $hashed_password, $rol]);
 
         // Mensaje de éxito
         $_SESSION['toastr'] = [
@@ -92,9 +95,16 @@ if (isset($_POST['registrar'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CSS primero -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- JavaScript después, en ORDEN CORRECTO -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+
 </head>
 
 <body>
@@ -120,19 +130,29 @@ if (isset($_POST['registrar'])) {
     <div class="col-md-4" style="margin: 0 auto; margin-top: 50px;">
         <div>
             <form method="post">
-                <label class="form-label mt-4">Registrate</label>
+                <h4 class="form-label mt-4">Registrate</h4>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" name="name" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">Nombre</label>
+                    <input type="text" class="form-control" name="name" placeholder="name@example.com">
+                    <label for="name"><i class="fa-regular fa-user"></i> Nombre</label>
+
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">Email</label>
+                    <input type="email" class="form-control" name="email" placeholder="name@example.com">
+                    <label for="email"><i class="fa-regular fa-envelope"></i> Email</label>
                 </div>
                 <div class="form-floating">
-                    <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" autocomplete="off">
-                    <label for="floatingPassword">Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password" autocomplete="off">
+                    <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
                 </div>
+                <div class="form-floating mt-3">
+                    <select class="form-select" id="rol" name="rol">
+                        <option value="tecnico">Técnico</option>
+                        <option value="almacen">Almacén</option>
+                        <option value="compras">Compras</option>
+                    </select>
+                    <label for="rol"><i class="fa-solid fa-user-gear"></i> Rol</label>
+                </div>
+
                 <button type="submit" class="btn btn-primary mt-3" name="registrar">Registrar</button>
             </form>
 

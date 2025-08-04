@@ -26,9 +26,9 @@ function redirigirSegunRol() {
     if ($_SESSION['rol'] === 'compras') {
         header('Location: compras/sesion_usuario.php');
     } elseif ($_SESSION['rol'] === 'almacen') {
-        header('Location: almacen/index_inventario.php');
+        header('Location: almacen/productos.php');
     } else {
-        header('Location: users/pedir_material_user.php');
+        header('Location: users/agregar_productos.php');
     }
     exit();
 }

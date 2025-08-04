@@ -152,8 +152,8 @@ $pendientes = $query->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= $solicitud['cantidad'] ?></td>
                         <td><?= $solicitud['existencia'] ?></td>
                         <td>
-                            <a href="?accion=aceptar&id=<?= $solicitud['id_solicitud'] ?>" class="btn btn-success">Aceptar</a>
-                            <a href="?accion=rechazar&id=<?= $solicitud['id_solicitud'] ?>" class="btn btn-danger">Rechazar</a>
+                            <a href="?accion=aceptar&id=<?= $solicitud['id_solicitud'] ?>" class="btn btn-success"><i class="fa-solid fa-check"></i> Aceptar</a>
+                            <a href="?accion=rechazar&id=<?= $solicitud['id_solicitud'] ?>" class="btn btn-danger"><i class="fa-solid fa-xmark"></i> Rechazar</a>
                     </tr>
                 </tbody>
             </table>
