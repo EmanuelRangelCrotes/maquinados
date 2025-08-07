@@ -94,13 +94,15 @@ if (!isset($_SESSION['name'])) {
 }
 
 // Consulta con ordenamiento: primero nombres que NO empiezan con número (letras) y luego los que sí, todo alfabetizado (collate compatible)
+
 $sql_search = "
     SELECT id_productos, nombre, sku, clase, descripcion, unidad_medida, precio, existencia 
     FROM productos
-    ORDER BY (nombre REGEXP '^[0-9]') ASC, nombre COLLATE utf8mb4_general_ci ASC
 ";
 $query_search = $cnnPDO->prepare($sql_search);
 $query_search->execute();
+
+
 ?>
 
 <div class="row">
@@ -123,6 +125,13 @@ $query_search->execute();
                     </div>
                 </div>
             </div>
+            <div class="row mb-2">
+    <div class="col-md-6">
+        <button class="btn btn-outline-secondary btn-sm" onclick="sortTable('nombre')">Ordenar por Nombre</button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="sortTable('clase')">Ordenar por Clase</button>
+    </div>
+</div>
+
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-12 table-responsive">
@@ -355,6 +364,35 @@ $query_search->execute();
         });
     })();
 </script>
+<script>
+function sortTable(colName) {
+    const table = document.getElementById("purchaseList");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    
+    const colIndex = {
+        'nombre': 0,
+        'clase': 2
+    }[colName];
+
+    rows.sort((a, b) => {
+        const aText = a.cells[colIndex].textContent.trim();
+        const bText = b.cells[colIndex].textContent.trim();
+
+        const aIsNumber = /^\d/.test(aText);
+        const bIsNumber = /^\d/.test(bText);
+
+        if (aIsNumber && !bIsNumber) return 1;
+        if (!aIsNumber && bIsNumber) return -1;
+
+        return aText.localeCompare(bText, undefined, { sensitivity: 'base' });
+    });
+
+    // Reinsertar las filas ordenadas
+    rows.forEach(row => tbody.appendChild(row));
+}
+</script>
+
 
 <style>
     .suggestions-container {
