@@ -115,6 +115,18 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 <script src="script.js"></script>
+
+<script>
+    // Script para la tabla de data table
+    $(document).ready(function() {
+        $('#DataTable').DataTable({
+            language: {
+                "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            }
+        });
+    });
+</script>
+
 <script>
     function cargarSolicitudes() {
         fetch('get_pedidos_compras.php')

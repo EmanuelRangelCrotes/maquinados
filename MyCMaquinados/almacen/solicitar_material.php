@@ -236,6 +236,17 @@ $productos = $query_productos->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
+    // Script para la tabla de data table
+    $(document).ready(function() {
+        $('#purchaseList').DataTable({
+            language: {
+                "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            }
+        });
+    });
+</script>
+
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         const skuInput = document.getElementById('sku');
         const suggestionsBox = document.getElementById('sku_suggestions');

@@ -113,12 +113,6 @@ $query_total->execute();
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-md-4 ms-auto">
-                        <div class="search">
-                            <input type="text" class="form-control" placeholder="Buscar por nombre o clase..." id="busquedaProductos">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </div>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -173,29 +167,7 @@ $query_total->execute();
                 </div>
             </div>
         </div>
-
-        <script>
-            document.getElementById('busquedaProductos').addEventListener('keyup', function() {
-                const filtro = this.value.toLowerCase().trim();
-                const filas = document.querySelectorAll('#purchaseList tbody tr');
-
-                filas.forEach(fila => {
-                    const nombre = fila.cells[0].textContent.toLowerCase();
-                    const clase = fila.cells[2].textContent.toLowerCase();
-
-                    if (filtro === '') {
-                        fila.style.display = '';
-                    } else if (nombre.includes(filtro) || clase.includes(filtro)) {
-                        fila.style.display = '';
-                    } else {
-                        fila.style.display = 'none';
-                    }
-                });
-            });
-        </script>
-
     </div>
-
 
     <div id="purchaseModal" class="modal fade" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -279,6 +251,17 @@ $query_total->execute();
         </div>
     </div>
 
+
+    <script>
+        // Script para la tabla de data table
+        $(document).ready(function() {
+            $('#purchaseList').DataTable({
+                language: {
+                    "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                }
+            });
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -469,39 +452,5 @@ $query_total->execute();
             });
         });
     </script>
-
-
-
-    <style>
-        .suggestions-container {
-            position: absolute;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            display: none;
-        }
-
-        .suggestion-item {
-            padding: 8px 12px;
-            cursor: pointer;
-        }
-
-        .suggestion-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        .no-results {
-            padding: 8px 12px;
-            color: #777;
-            font-style: italic;
-        }
-    </style>
-
-
 
     <?php include_once './templates/footer.php'; ?>

@@ -1,5 +1,5 @@
-<?php include_once './templates/header.php';
-
+<?php
+include_once './templates/header.php';
 require_once './db_conexion.php';
 session_start();
 
@@ -86,6 +86,9 @@ if (!isset($_SESSION['name'])) {
 $sql_search = "SELECT id_productos, nombre, sku, clase, descripcion, unidad_medida, precio, existencia FROM productos";
 $query_search = $cnnPDO->prepare($sql_search);
 $query_search->execute();
+
+
+
 
 $sql_total  = "SELECT SUM(existencia * precio) AS cantidad_total
 FROM productos";
@@ -202,548 +205,272 @@ if (isset($_POST['añadir_descripcion'])) {
                     </div>
                 </div>
             </div>
+
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-4 ms-auto">
-                        <div class="search">
-                            <input type="text" class="form-control" placeholder="Buscar por nombre o clase..." id="busquedaProductos">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-12 table-responsive">
-                            <table id="purchaseList" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>SKU</th>
-                                        <th>Clase</th>
-                                        <th>Descripción</th>
-                                        <th>Unidad de Medida</th>
-                                        <th>Precio</th>
-                                        <th>Existencia</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($query_total as $total) : ?>
-                                        <?php while ($row = $query_search->fetch(PDO::FETCH_ASSOC)) : ?>
-                                            <tr>
-                                                <td><?= htmlspecialchars($row['nombre']) ?></td>
-                                                <td><?= htmlspecialchars($row['sku']) ?></td>
-                                                <td><?= htmlspecialchars($row['clase']) ?></td>
-                                                <td><?= htmlspecialchars($row['descripcion']) ?></td>
-                                                <td><?= htmlspecialchars($row['unidad_medida']) ?></td>
-                                                <td><?= htmlspecialchars($row['precio']) ?></td>
-                                                <td><?= htmlspecialchars($row['existencia']) ?></td>
-                                                <td>
+                <div class="row">
+                    <div class="col-sm-12 table-responsive">
+                        <table id="purchaseList" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>SKU</th>
+                                    <th>Clase</th>
+                                    <th>Descripción</th>
+                                    <th>Unidad de Medida</th>
+                                    <th>Precio</th>
+                                    <th>Existencia</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="content">
+                                <?php foreach ($query_total as $total) : ?>
+                                    <?php while ($row = $query_search->fetch(PDO::FETCH_ASSOC)) : ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($row['nombre']) ?></td>
+                                            <td><?= htmlspecialchars($row['sku']) ?></td>
+                                            <td><?= htmlspecialchars($row['clase']) ?></td>
+                                            <td><?= htmlspecialchars($row['descripcion']) ?></td>
+                                            <td><?= htmlspecialchars($row['unidad_medida']) ?></td>
+                                            <td><?= htmlspecialchars($row['precio']) ?></td>
+                                            <td><?= htmlspecialchars($row['existencia']) ?></td>
+                                            <td>
+                                                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 text-end">
+                                                    <!-- Botón editar precio -->
+                                                    <button type="button"
+                                                        class="btn btn-primary btn-sm rounded-0 edit-btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editModal"
+                                                        data-id="<?= htmlspecialchars($row['id_productos']) ?>"
+                                                        data-precio="<?= htmlspecialchars($row['precio']) ?>"
+                                                        data-nombre="<?= htmlspecialchars($row['nombre']) ?>"
+                                                        data-sku="<?= htmlspecialchars($row['sku']) ?>"
+                                                        data-clase="<?= htmlspecialchars($row['clase']) ?>"
+                                                        data-descripcion="<?= htmlspecialchars($row['descripcion']) ?>"
+                                                        data-unidad_medida="<?= htmlspecialchars($row['unidad_medida']) ?>">
+                                                        <i class="far fa-plus-square"></i> Editar Precio
+                                                    </button>
                                                     <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 text-end">
-                                                        <!-- Botón editar precio -->
-                                                        <button type="button"
-                                                            class="btn btn-primary btn-sm rounded-0 edit-btn"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#editModal"
-                                                            data-id="<?= htmlspecialchars($row['id_productos']) ?>"
-                                                            data-precio="<?= htmlspecialchars($row['precio']) ?>"
-                                                            data-nombre="<?= htmlspecialchars($row['nombre']) ?>"
-                                                            data-sku="<?= htmlspecialchars($row['sku']) ?>"
-                                                            data-clase="<?= htmlspecialchars($row['clase']) ?>"
-                                                            data-descripcion="<?= htmlspecialchars($row['descripcion']) ?>"
-                                                            data-unidad_medida="<?= htmlspecialchars($row['unidad_medida']) ?>">
-                                                            <i class="far fa-plus-square"></i> Editar Precio
-                                                        </button>
-                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 text-end">
-                                                            <div class="icon-info">
-                                                                <button type="button"
-                                                                    class="btn btn-info btn-sm rounded-0"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#preciosModal"
-                                                                    data-id_producto="<?= htmlspecialchars($row['id_productos']) ?>"
-                                                                    data-total_precio="$<?= htmlspecialchars($row['precio'] * $row['existencia']) ?>"
-                                                                    data-total_inventario="$<?= htmlspecialchars($total['cantidad_total']) ?>">
-                                                                    <i class="fa-solid fa-circle-info"></i>Precio por Producto
-                                                                </button>
-                                                            </div>
+                                                        <div class="icon-info">
+                                                            <button type="button"
+                                                                class="btn btn-info btn-sm rounded-0"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#preciosModal"
+                                                                data-id_producto="<?= htmlspecialchars($row['id_productos']) ?>"
+                                                                data-total_precio="$<?= htmlspecialchars($row['precio'] * $row['existencia']) ?>"
+                                                                data-total_inventario="$<?= htmlspecialchars($total['cantidad_total']) ?>">
+                                                                <i class="fa-solid fa-circle-info"></i>Precio por Producto
+                                                            </button>
                                                         </div>
-                                                </td>
-                                            </tr>
-                                        <?php endwhile; ?>
-                                    <?php endforeach; ?>
+                                                    </div>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php endforeach; ?>
 
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
+
+
                     </div>
                 </div>
             </div>
         </div>
-
-        <script>
-            document.getElementById('busquedaProductos').addEventListener('keyup', function() {
-                const filtro = this.value.toLowerCase().trim();
-                const filas = document.querySelectorAll('#purchaseList tbody tr');
-
-                filas.forEach(fila => {
-                    const nombre = fila.cells[0].textContent.toLowerCase();
-                    const clase = fila.cells[2].textContent.toLowerCase();
-
-                    if (filtro === '') {
-                        fila.style.display = '';
-                    } else if (nombre.includes(filtro) || clase.includes(filtro)) {
-                        fila.style.display = '';
-                    } else {
-                        fila.style.display = 'none';
-                    }
-                });
-            });
-        </script>
-
     </div>
 
 
-    <div id="purchaseModal" class="modal fade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"><i class="far fa-plus-square"></i> Agregar Producto</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" id="productForm">
-                        <div class="mb-3">
-                            <label for="add_nombre">Nombre:</label>
-                            <input type="text" class="form-control" name="nombre" id="add_nombre">
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_sku">SKU</label>
-                            <input type="text" class="form-control" name="sku" id="add_sku">
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_clase">Clase</label>
-                            <input type="text" class="form-control" name="clase" id="add_clase" autocomplete="off">
-                            <div id="clase-suggestions" class="suggestions-container"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_descripcion">Descripción</label>
-                            <input type="text" class="form-control" name="descripcion" id="add_descripcion" autocomplete="off">
-                            <div id="descripcion-suggestions" class="suggestions-container"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_unidad_medida">Unidad de Medida</label>
-                            <select class="form-control" name="unidad_medida" id="add_unidad_medida">
-                                <option value="">Seleccione la Unidad de Medida</option>
-                                <option value="KG">KG</option>
-                                <option value="LT">LT</option>
-                                <option value="PZ">PZ</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_existencia">Existencia</label>
-                            <input type="text" class="form-control" name="existencia" id="add_existencia">
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_precio">Precio</label>
-                            <input type="text" class="form-control" name="precio" id="add_precio">
-                        </div>
-                    </form>
-                </div>
+
+</div>
+
+
+<div id="purchaseModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="far fa-plus-square"></i> Agregar Producto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="productForm">
+                    <div class="mb-3">
+                        <label for="add_nombre">Nombre:</label>
+                        <input type="text" class="form-control" name="nombre" id="add_nombre">
+                    </div>
+                    <div class="mb-3">
+                        <label for="add_sku">SKU</label>
+                        <input type="text" class="form-control" name="sku" id="add_sku">
+                    </div>
+                    <div class="mb-3">
+                        <label for="add_clase">Clase</label>
+                        <input type="text" class="form-control" name="clase" id="add_clase" autocomplete="off">
+                        <div id="clase-suggestions" class="suggestions-container"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="add_descripcion">Descripción</label>
+                        <input type="text" class="form-control" name="descripcion" id="add_descripcion" autocomplete="off">
+                        <div id="descripcion-suggestions" class="suggestions-container"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="add_unidad_medida">Unidad de Medida</label>
+                        <select class="form-control" name="unidad_medida" id="add_unidad_medida">
+                            <option value="">Seleccione la Unidad de Medida</option>
+                            <option value="KG">KG</option>
+                            <option value="LT">LT</option>
+                            <option value="PZ">PZ</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="add_existencia">Existencia</label>
+                        <input type="text" class="form-control" name="existencia" id="add_existencia">
+                    </div>
+                    <div class="mb-3">
+                        <label for="add_precio">Precio</label>
+                        <input type="text" class="form-control" name="precio" id="add_precio">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="agregar" class="btn btn-primary" form="productForm">Agregar</button>
+                <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modales para cada opción -->
+<div class="modal fade" id="modalPendientes" tabindex="-1" aria-labelledby="modalPendientesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPendientesLabel">Añadir Clase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="claseForm">
+                    <div class="mb-3">
+                        <label for="nombre">Clase</label>
+                        <input type="text" class="form-control" name="nombre" autocomplete="off">
+                        <div id="clase-suggestions" class="suggestions-container"></div>
+                    </div>
+                </form>
                 <div class="modal-footer">
-                    <button type="submit" name="agregar" class="btn btn-primary" form="productForm">Agregar</button>
+                    <button type="submit" name="añadir_clase" class="btn btn-primary" form="claseForm">Agregar</button>
                     <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-
-    <!-- Modales para cada opción -->
-    <div class="modal fade" id="modalPendientes" tabindex="-1" aria-labelledby="modalPendientesLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalPendientesLabel">Añadir Clase</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" id="claseForm">
-                        <div class="mb-3">
-                            <label for="nombre">Clase</label>
-                            <input type="text" class="form-control" name="nombre" autocomplete="off">
-                            <div id="clase-suggestions" class="suggestions-container"></div>
-                        </div>
-                    </form>
-                    <div class="modal-footer">
-                        <button type="submit" name="añadir_clase" class="btn btn-primary" form="claseForm">Agregar</button>
-                        <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
-                    </div>
-                </div>
+<div class="modal fade" id="modalAceptadas" tabindex="-1" aria-labelledby="modalAceptadasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAceptadasLabel">Añadir Descripcion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalAceptadas" tabindex="-1" aria-labelledby="modalAceptadasLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAceptadasLabel">Añadir Descripcion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" id="descripcionForm">
-                        <div class="mb-3">
-                            <label for="nombre">Descripcion</label>
-                            <input type="text" class="form-control" name="nombre" autocomplete="off">
-                            <div id="clase-suggestions" class="suggestions-container"></div>
-                        </div>
-                    </form>
-                    <div class="modal-footer">
-                        <button type="submit" name="añadir_descripcion" class="btn btn-primary" form="descripcionForm">Agregar</button>
-                        <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
+            <div class="modal-body">
+                <form method="post" id="descripcionForm">
+                    <div class="mb-3">
+                        <label for="nombre">Descripcion</label>
+                        <input type="text" class="form-control" name="nombre" autocomplete="off">
+                        <div id="clase-suggestions" class="suggestions-container"></div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="editModal" class="modal fade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"><i class="far fa-edit"></i> Editar Precio</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" id="editForm" action="actualizar_precio.php">
-                        <input type="hidden" name="id_productos" id="edit_id_productos">
-                        <div class="mb-3">
-                            <label for="edit_nombre">Nombre:</label>
-                            <input type="text" class="form-control" name="nombre" id="edit_nombre">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_sku">SKU</label>
-                            <input type="text" class="form-control" name="sku" id="edit_sku">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_clase">Clase</label>
-                            <input type="text" class="form-control" name="clase" id="edit_clase">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_descripcion">Descripción</label>
-                            <input type="text" class="form-control" name="descripcion" id="edit_descripcion">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_unidad_medida">Unidad de Medida</label>
-                            <input type="text" class="form-control" name="unidad_medida" id="edit_unidad_medida">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_precio">Precio Actual</label>
-                            <input type="text" class="form-control" name="old_price" id="edit_precio" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_nuevo_precio">Nuevo Precio</label>
-                            <input type="text" class="form-control" name="precio" id="edit_nuevo_precio">
-                        </div>
-                    </form>
-                </div>
+                </form>
                 <div class="modal-footer">
-                    <button type="submit" name="actualizar" class="btn btn-primary" form="editForm">Actualizar</button>
+                    <button type="submit" name="añadir_descripcion" class="btn btn-primary" form="descripcionForm">Agregar</button>
                     <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-
-    <div id="preciosModal" class="modal fade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"><i class="far fa-money-bill-alt"></i> Precio Total</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="preciosForm">
-                        <input type="hidden" name="id_producto" id="precios_id_producto">
-                        <div class="mb-3">
-                            <label for="precios_total_precio">Precio Total</label>
-                            <input type="text" class="form-control" name="total_precio" id="precios_total_precio" readonly>
-                            <label for="precios_total_precio">Total en Inventario</label>
-                            <input type="text" class="form-control" name="total_precio" id="precios_cantidad_total" readonly>
-
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
-                </div>
+<div id="editModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="far fa-edit"></i> Editar Precio</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="editForm" action="actualizar_precio.php">
+                    <input type="hidden" name="id_productos" id="edit_id_productos">
+                    <div class="mb-3">
+                        <label for="edit_nombre">Nombre:</label>
+                        <input type="text" class="form-control" name="nombre" id="edit_nombre">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_sku">SKU</label>
+                        <input type="text" class="form-control" name="sku" id="edit_sku">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_clase">Clase</label>
+                        <input type="text" class="form-control" name="clase" id="edit_clase">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_descripcion">Descripción</label>
+                        <input type="text" class="form-control" name="descripcion" id="edit_descripcion">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_unidad_medida">Unidad de Medida</label>
+                        <input type="text" class="form-control" name="unidad_medida" id="edit_unidad_medida">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_precio">Precio Actual</label>
+                        <input type="text" class="form-control" name="old_price" id="edit_precio" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_nuevo_precio">Nuevo Precio</label>
+                        <input type="text" class="form-control" name="precio" id="edit_nuevo_precio">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="actualizar" class="btn btn-primary" form="editForm">Actualizar</button>
+                <button type="button" class="btn btn-default border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Editar modal
-            const editModal = document.getElementById('editModal');
-            editModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                if (!button) return;
-                document.getElementById('edit_id_productos').value = button.getAttribute('data-id');
-                document.getElementById('edit_precio').value = button.getAttribute('data-precio');
-                document.getElementById('edit_nombre').value = button.getAttribute('data-nombre');
-                document.getElementById('edit_sku').value = button.getAttribute('data-sku');
-                document.getElementById('edit_clase').value = button.getAttribute('data-clase');
-                document.getElementById('edit_descripcion').value = button.getAttribute('data-descripcion');
-                document.getElementById('edit_unidad_medida').value = button.getAttribute('data-unidad_medida');
-            });
+<div id="preciosModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="far fa-money-bill-alt"></i> Precio Total</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="preciosForm">
+                    <input type="hidden" name="id_producto" id="precios_id_producto">
+                    <div class="mb-3">
+                        <label for="precios_total_precio">Precio Total</label>
+                        <input type="text" class="form-control" name="total_precio" id="precios_total_precio" readonly>
+                        <label for="precios_total_precio">Total en Inventario</label>
+                        <input type="text" class="form-control" name="total_precio" id="precios_cantidad_total" readonly>
 
-            // Modal precios
-            const preciosModal = document.getElementById('preciosModal');
-            preciosModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                if (!button) return;
-                document.getElementById('precios_id_producto').value = button.getAttribute('data-id_producto');
-                document.getElementById('precios_total_precio').value = button.getAttribute('data-total_precio');
-                document.getElementById('precios_total_inventario').value = button.getAttribute('data-total_inventario');
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary border btn-sm rounded-0" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            });
-        });
+<script type="module" src="../functions/functions.js"></script>
 
-        preciosModal.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            if (!button) return;
-
-            const idProducto = button.getAttribute('data-id_producto');
-            const totalPrecio = button.getAttribute('data-total_precio');
-            const totalInventario = button.getAttribute('data-total_inventario');
-
-
-            const idInput = document.getElementById('precios_id_producto');
-            const totalInput = document.getElementById('precios_total_precio');
-            const totalInventarioInput = document.getElementById('precios_cantidad_total');
-
-
-            if (idInput) idInput.value = idProducto;
-            if (totalInput) totalInput.value = totalPrecio;
-            if (totalInventarioInput) totalInventarioInput.value = totalInventario;
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const preciosModal = document.getElementById('preciosModal');
-            preciosModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                if (!button) return;
-                const idProducto = button.getAttribute('data-id_producto');
-                const totalPrecio = button.getAttribute('data-total_precio');
-                const totalInventario = button.getAttribute('data-total_inventario');
-                preciosModal.querySelector('#precios_id_producto').value = idProducto;
-                preciosModal.querySelector('#precios_total_precio').value = totalPrecio;
-                preciosModal.querySelector('#precios_cantidad_total').value = totalInventario;
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            const claseInput = $('#add_clase');
-            const suggestionsContainer = $('#clase-suggestions');
-            let timeoutId;
-
-            // Función mejorada para cargar sugerencias
-            function loadSuggestions(searchTerm) {
-                console.log("Buscando: ", searchTerm); // Debug
-
-                $.ajax({
-                    url: 'buscar_clase.php',
-                    dataType: 'json',
-                    data: {
-                        q: searchTerm
-                    },
-                    success: function(data) {
-                        console.log("Respuesta recibida: ", data); // Debug
-
-                        suggestionsContainer.empty();
-
-                        if (data && data.length > 0) {
-                            data.forEach(item => {
-                                if (item.text) { // Asegurarse que existe text
-                                    suggestionsContainer.append(
-                                        '<div class="suggestion-item">' + item.text + '</div>'
-                                    );
-
-                                }
-                            });
-                            suggestionsContainer.show();
-                        } else {
-                            suggestionsContainer.hide();
-                            // Mostrar mensaje si no hay resultados
-                            if (searchTerm.length >= 2) {
-                                suggestionsContainer.html('<div class="no-results">No se encontraron resultados</div>').show();
-                            }
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error en AJAX: ", status, error); // Debug
-                        suggestionsContainer.hide();
-                    }
-                });
+<script>
+    // Script para la tabla de data table
+    $(document).ready(function() {
+        $('#purchaseList').DataTable({
+            language: {
+                "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
             }
-
-            // Evento al escribir - versión mejorada
-            claseInput.on('input', function() {
-                clearTimeout(timeoutId);
-                const searchTerm = $(this).val().trim();
-
-                if (searchTerm.length >= 2) {
-                    timeoutId = setTimeout(() => {
-                        loadSuggestions(searchTerm);
-                    }, 300);
-                } else {
-                    suggestionsContainer.hide();
-                }
-            });
-
-            // Selección de sugerencia
-            suggestionsContainer.on('click', '.suggestion-item', function() {
-                claseInput.val($(this).text());
-                suggestionsContainer.hide();
-            });
-
-            // Ocultar al hacer clic fuera
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('#clase, #clase-suggestions').length) {
-                    suggestionsContainer.hide();
-                }
-            });
         });
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            const descripcionInput = $('#add_descripcion');
-            const suggestionsContainer = $('#descripcion-suggestions');
-            let searchTimeout;
-
-            // Función para cargar sugerencias
-            function loadSuggestions(searchTerm) {
-                clearTimeout(searchTimeout);
-
-                if (searchTerm.length < 2) {
-                    suggestionsContainer.hide();
-                    return;
-                }
-
-                searchTimeout = setTimeout(() => {
-                    $.ajax({
-                        url: 'buscar_descripcion.php',
-                        data: {
-                            q: searchTerm
-                        },
-                        dataType: 'json',
-                        beforeSend: function() {
-                            suggestionsContainer.html('<div class="loading">Buscando...</div>').show();
-                        },
-                        success: function(data) {
-                            suggestionsContainer.empty();
-
-                            if (data && data.length > 0) {
-                                data.forEach(item => {
-                                    suggestionsContainer.append(
-                                        '<div class="suggestion-item">' + item.text + '</div>'
-                                    );
-
-                                });
-                            } else {
-                                suggestionsContainer.append(
-                                    '<div class="no-results">No se encontraron coincidencias</div>'
-                                );
-                            }
-                            suggestionsContainer.show();
-                        },
-                        error: function() {
-                            suggestionsContainer.hide();
-                        }
-                    });
-                }, 300);
-            }
-
-            // Evento al escribir
-            descripcionInput.on('input', function() {
-                loadSuggestions($(this).val().trim());
-            });
-
-            // Seleccionar sugerencia
-            suggestionsContainer.on('click', '.suggestion-item', function() {
-                descripcionInput.val($(this).text());
-                suggestionsContainer.hide();
-            });
-
-            // Ocultar al hacer clic fuera
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('#descripcion, #descripcion-suggestions').length) {
-                    suggestionsContainer.hide();
-                }
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const editModal = document.getElementById('editModal');
-            editModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                if (!button) return; // Asegúrate de que el botón existe
-                const id = button.getAttribute('data-id');
-                const precio = button.getAttribute('data-precio');
-                const nombre = button.getAttribute('data-nombre');
-                const sku = button.getAttribute('data-sku');
-                const clase = button.getAttribute('data-clase');
-                const descripcion = button.getAttribute('data-descripcion');
-                const unidadMedida = button.getAttribute('data-unidad_medida');
-                // Llena los campos del modal
-                editModal.querySelector('#edit_id_productos').value = id;
-                editModal.querySelector('#edit_precio').value = precio;
-                editModal.querySelector('#edit_nombre').value = nombre;
-                editModal.querySelector('#edit_sku').value = sku;
-                editModal.querySelector('#edit_clase').value = clase;
-                editModal.querySelector('#edit_descripcion').value = descripcion;
-                editModal.querySelector('#edit_unidad_medida').value = unidadMedida;
-            });
-        });
-    </script>
-
-    <style>
-        .suggestions-container {
-            position: absolute;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            display: none;
-        }
-
-        .suggestion-item {
-            padding: 8px 12px;
-            cursor: pointer;
-        }
-
-        .suggestion-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        .no-results {
-            padding: 8px 12px;
-            color: #777;
-            font-style: italic;
-        }
-    </style>
-
-
-
-    <?php include_once './templates/footer.php'; ?>
+    });
+</script>
+<?php include_once './templates/footer.php'; ?>

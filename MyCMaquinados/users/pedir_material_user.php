@@ -46,13 +46,6 @@ if (empty($productos)) {
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
-                        <div class="col-md-4 ms-auto">
-                            <div class="search">
-                                <input type="text" id="busquedaProductos" class="form-control" align="center"
-                                    placeholder="Buscar por nombre o clase...">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </div>
-                        </div>
                         <div class=" row">
                             <div class="col-sm-12 table-responsive">
                                 <table id="purchaseList" class="table table-bordered table-striped"
@@ -139,6 +132,18 @@ if (empty($productos)) {
             </div>
         </div>
 
+
+        <script>
+            // Script para la tabla de data table
+            $(document).ready(function() {
+                $('#purchaseList').DataTable({
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    }
+                });
+            });
+        </script>
+        
         <script>
             document.getElementById('busquedaProductos').addEventListener('keyup', function() {
                 const filtro = this.value.toLowerCase().trim();
@@ -213,14 +218,4 @@ if (empty($productos)) {
                 });
             });
         </script>
-
-
-        <style>
-            #sku_suggestions {
-                max-height: 200px;
-                overflow-y: auto;
-                z-index: 1000;
-            }
-        </style>
-
         <?php include_once './templates/footer.php'; ?>
