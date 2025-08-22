@@ -16,61 +16,77 @@ if (isset($_POST['surtir'])) {
     $accion = filter_input(INPUT_POST, 'accion');
     $precio = filter_input(INPUT_POST, 'precio', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
-    try {
-        $sql_select = "SELECT cantidad, cantidad_surtida FROM solicitar_material WHERE id_solicitud = ?";
-        $stmt_select = $cnnPDO->prepare($sql_select);
-        $stmt_select->execute([$id_solicitud]);
-        $solicitud = $stmt_select->fetch(PDO::FETCH_ASSOC);
+    if (isset($_POST['surtir'])) {
+        $id_solicitud = filter_input(INPUT_POST, 'id_solicitud', FILTER_SANITIZE_NUMBER_INT);
+        $cantidad_surtir = filter_input(INPUT_POST, 'cantidad_surtir', FILTER_SANITIZE_NUMBER_INT);
+        $accion = filter_input(INPUT_POST, 'accion');
+        $precio = filter_input(INPUT_POST, 'precio', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
-        if ($accion == 'agregar') {
-            $nueva_cantidad_surtida = $solicitud['cantidad_surtida'] + $cantidad_surtir;
-            $diferencia = $cantidad_surtir; // Lo que se va a sumar a existencia
-        } else { // actualizar
-            $nueva_cantidad_surtida = $cantidad_surtir;
-            $diferencia = $cantidad_surtir - $solicitud['cantidad_surtida']; // Solo la diferencia se suma/resta a existencia
-        }
+        try {
+            $sql_select = "SELECT cantidad, cantidad_surtida FROM solicitar_material WHERE id_solicitud = ?";
+            $stmt_select = $cnnPDO->prepare($sql_select);
+            $stmt_select->execute([$id_solicitud]);
+            $solicitud = $stmt_select->fetch(PDO::FETCH_ASSOC);
 
-        // Determinar estatus
-        if ($nueva_cantidad_surtida >= $solicitud['cantidad']) {
-            $estatus = 'Surtido';
-        } elseif ($nueva_cantidad_surtida > 0) {
-            $estatus = 'Parcial';
-        } else {
-            $estatus = 'Pendiente';
-        }
+            // Validación: No permitir surtir más de lo solicitado
+            if ($accion == 'agregar') {
+                $nueva_cantidad_surtida = $solicitud['cantidad_surtida'] + $cantidad_surtir;
+            } else { // actualizar
+                $nueva_cantidad_surtida = $cantidad_surtir;
+            }
+
+            if ($nueva_cantidad_surtida > $solicitud['cantidad']) {
+                $_SESSION['toastr'] = [
+                    'type' => 'warning',
+                    'message' => 'La cantidad a surtir no puede ser mayor a la solicitada.'
+                ];
+                header("Location: surtido.php");
+                exit();
+            }
+
+
+            // Determinar estatus
+            if ($nueva_cantidad_surtida >= $solicitud['cantidad']) {
+                $estatus = 'Surtido';
+            } elseif ($nueva_cantidad_surtida > 0) {
+                $estatus = 'Parcial';
+            } else {
+                $estatus = 'Pendiente';
+            }
 
 
 
-        // Actualizar solicitud
-        $sql = "UPDATE solicitar_material sm
+            // Actualizar solicitud
+            $sql = "UPDATE solicitar_material sm
         SET cantidad_surtida = ?, estatus = ?, fecha_surtido = NOW(), precio_unitario = ?
         WHERE id_solicitud = ?";
-        $stmt = $cnnPDO->prepare($sql);
-        $stmt->execute([$nueva_cantidad_surtida, $estatus, $precio, $id_solicitud]);
+            $stmt = $cnnPDO->prepare($sql);
+            $stmt->execute([$nueva_cantidad_surtida, $estatus, $precio, $id_solicitud]);
 
-        // Actualizar inventario solo si la diferencia es distinta de 0
-        if ($diferencia != 0) {
-            $sql_inventario = "UPDATE productos p
+
+
+            // Actualizar inventario solo si la diferencia es distinta de 0
+            if ($diferencia != 0) {
+                $sql_inventario = "UPDATE productos p
                        JOIN solicitar_material sm ON p.id_productos = sm.id_productos
                        SET p.existencia = p.existencia + ?
                        WHERE sm.id_solicitud = ?";
-            $stmt_inventario = $cnnPDO->prepare($sql_inventario);
-            $stmt_inventario->execute([$diferencia, $id_solicitud]);
+                $stmt_inventario = $cnnPDO->prepare($sql_inventario);
+                $stmt_inventario->execute([$diferencia, $id_solicitud, $nueva_cantidad_surtida]);
+            }
+            $_SESSION['toastr'] = [
+                'type' => 'success',
+                'message' => 'Material surtido correctamente. Estatus: ' . $estatus
+            ];
+            header("Location: surtido.php");
+            exit();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            $_SESSION['toastr'] = [
+                'type' => 'error',
+                'message' => 'Error al surtir el material: ' . $e->getMessage()
+            ];
         }
-
-        $_SESSION['toastr'] = [
-            'type' => 'success',
-            'message' => 'Material surtido correctamente. Estatus: ' . $estatus
-        ];
-
-        header("Location: surtido.php");
-        exit();
-    } catch (PDOException $e) {
-        error_log($e->getMessage());
-        $_SESSION['toastr'] = [
-            'type' => 'error',
-            'message' => 'Error al surtir el material: ' . $e->getMessage()
-        ];
     }
 }
 
@@ -96,7 +112,7 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
                 <h3 class="card-title">Surtir Material Solicitado</h3>
             </div>
             <div class="card-body">
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="tabla_surtido">
                     <thead>
                         <tr>
                             <th>Producto</th>
@@ -124,13 +140,13 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
                                         <?= htmlspecialchars($solicitud['estatus']) ?>
                                     </span>
                                 </td>
-                                <td><?= htmlspecialchars($solicitud['fecha']) ?></td>
+                                <td class="fecha"><?= htmlspecialchars($solicitud['fecha']) ?></td>
                                 <td>
                                     <?php if ($solicitud['estatus'] !== 'Surtido'): ?>
                                         <form method="post" class="row g-2">
                                             <input type="hidden" name="id_solicitud" value="<?= $solicitud['id_solicitud'] ?>">
                                             <input type="hidden" name="precio" value="<?= htmlspecialchars($solicitud['precio']) ?>">
-                                            <div class="col-5">
+                                            <div class="col-5-1">
                                                 <select name="accion" class="form-select form-select-sm">
                                                     <option value="agregar">Agregar</option>
                                                     <option value="actualizar">Actualizar</option>
@@ -159,5 +175,16 @@ $solicitudes = $cnnPDO->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+
+<script>
+    // Script para la tabla de data table
+    $(document).ready(function() {
+        $('#tabla_surtido').DataTable({
+            language: {
+                "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            }
+        });
+    });
+</script>
 
 <?php include_once './templates/footer.php'; ?>

@@ -45,26 +45,33 @@ td {
 }
 
 .form-select-sm {
-    width: 150px;
-    margin-right: 250px;
+    width: 70%;
+    margin-left:11px;
 }
+
+.table-bordered{
+    width: 100%;
+}
+
 
 .form-control-sm {
     width: 80px;
+    left: 30px;
 }
 
-.col-5 {
-    display: flex;
-    justify-content: flex-start;
-    position: relative;
-    left: 10%;
+.fecha{
+    white-space: nowrap;
+}
 
+select{
+    left: 90px;
+    right: 30px;
 }
 
 .col-2 {
     display: flex;
     position: relative;
-    right: 30px;
+    left: 20px;
 }
 
 .total-inventory {
